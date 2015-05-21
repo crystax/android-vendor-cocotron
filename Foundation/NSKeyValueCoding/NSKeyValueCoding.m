@@ -104,7 +104,7 @@ NSString *const NSUndefinedKeyException = @"NSUnknownKeyException";
 	{
 		if(strcmp([value objCType], cleanType))
 		{
-			NSLog(@"trying to set value of type %s for type %@", cleanType, [value objCType]);
+			NSLog(@"trying to set value of type %s for type %s", cleanType, [value objCType]);
 			return NO;
 		}
 		[value getValue:buffer];

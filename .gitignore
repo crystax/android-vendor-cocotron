@@ -2,3 +2,4 @@ xcuserdata
 build
 system
 .DS_Store
+*.swp

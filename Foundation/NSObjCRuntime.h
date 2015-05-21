@@ -117,6 +117,14 @@ typedef NSInteger NSComparisonResult;
 
 #define NSNotFound NSIntegerMax
 
+#ifdef MIN
+#undef MIN
+#endif
+
+#ifdef MAX
+#undef MAX
+#endif
+
 #ifndef MIN
 #define MIN(a,b) ({__typeof__(a) _a = (a); __typeof__(b) _b = (b); (_a < _b) ? _a : _b; })
 #else

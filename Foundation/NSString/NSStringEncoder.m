@@ -16,6 +16,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <Foundation/NSMapTable.h>
 #import <Foundation/NSRaiseException.h>
 
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wobjc-root-class"
+#endif
+
 @interface _NSEncodingRegistration
 + (void)registerTable:(uint16_t *)table forEncoding:(CFStringEncoding)encoding;
 + (uint16_t *)tableForEncoding:(CFStringEncoding)encoding;

@@ -30,7 +30,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -initWithResumeData:(NSData *)data delegate:delegate path:(NSString *)path {
    NSUnimplementedMethod();
-   return NO;
+   return nil;
 }
 
 -(NSURLRequest *)request {
@@ -39,7 +39,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -(NSData *)resumeData {
    NSUnimplementedMethod();
-   return NO;
+   return nil;
 }
 
 -(BOOL)deletesFileUponFailure {

@@ -15,6 +15,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 @implementation NSAutoreleasePool
 
+#ifdef PAGESIZE
+#undef PAGESIZE
+#endif
 #define PAGESIZE 1024
 
 void objc_noAutoreleasePool(id object) {

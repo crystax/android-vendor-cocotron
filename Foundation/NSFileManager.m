@@ -256,7 +256,7 @@ stringByAppendingPathComponent:[files objectAtIndex:x]] paths:paths];
 
 -(NSString *)pathContentOfSymbolicLinkAtPath:(NSString *)path {
    NSInvalidAbstractInvocation();
-   return NO;
+   return nil;
 }
 
 -(BOOL)fileExistsAtPath:(NSString *)path {

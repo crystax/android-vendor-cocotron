@@ -900,6 +900,10 @@ static NSMutableString *AssembleResourceSpecifier( NSMutableString *result, NSSt
 
 @end
 
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+#endif
+
 @implementation NSURL (NSURLPathUtilities)
 
 + (NSURL *)fileURLWithPathComponents:(NSArray *)components {

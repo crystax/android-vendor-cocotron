@@ -241,6 +241,7 @@ const NSTimeInterval NSTimeIntervalSince1970 = (NSTimeInterval)978307200.0;
 
 + (id)dateWithNaturalLanguageString:(NSString *)string {
    NSUnimplementedMethod();
+   return nil;
 }
 
 @end

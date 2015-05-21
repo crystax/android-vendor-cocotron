@@ -54,7 +54,7 @@ OBJC_EXPORT void *NSSymbolInModule(NSModuleHandle handle, const char *symbol);
 
 #include <mach-o/dyld.h>
 
-#elif defined(LINUX)
+#elif defined(LINUX) || defined(__ANDROID__)
 
 #include <sys/stat.h>
 

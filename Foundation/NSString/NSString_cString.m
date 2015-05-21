@@ -24,6 +24,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 #include <string.h>
 
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wpointer-sign"
+#pragma clang diagnostic ignored "-Wincompatible-pointer-types"
+#endif
+
 // Note: we are falling back to NeXTSTEP encoding for unsupported ones, and log a message only once
 //       And before supporting non ASCII based ones, we should probably first clean any use of NSString<->C string conversion
 //       with no explicit encoding because some place probably really expect some kind of ASCII

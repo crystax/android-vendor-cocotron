@@ -1,8 +1,14 @@
 #import <Foundation/NSProcessInfo.h>
 #import <stdio.h>
 #import <string.h>
+#if __ANDROID__
+#include <objc/class.h>
+#include <compiler_rt/Block_private.h>
+#include <compiler_rt/Block.h>
+#else
 #include <ringo/compiler_rt/Block_private.h>
 #include <ringo/compiler_rt/Block.h>
+#endif
 
 /* Copyright (c) 2011 Tobias Platen
  
@@ -32,7 +38,7 @@ static void init_block_class(void* nsblock,char* class)
 {
 	return (id) _Block_copy(self);
 }
-- (void) release
+- (oneway void) release
 {
 	_Block_release(self);
 }
