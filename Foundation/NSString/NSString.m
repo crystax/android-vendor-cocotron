@@ -1631,7 +1631,7 @@ static inline void reverseString(unichar *buf, NSUInteger len) {
 		unsigned char firstCharacter=0,firstNibble=0;
 		unsigned char *result = NSZoneMalloc(NULL,sizeof(unsigned char)*length); // We can't grow
         if (result == NULL) {
-            NSLog(@"%@: failed to allocate buffer of size %d", NSStringFromSelector(_cmd), length);
+            NSLog(@"%@: failed to allocate buffer of size %zu", NSStringFromSelector(_cmd), length);
         } else {
             
             for(NSUInteger i=0;i<length;i++){
@@ -1825,7 +1825,7 @@ static inline void reverseString(unichar *buf, NSUInteger len) {
     NSUInteger length=[self length];
     unichar  *unicode = NSZoneMalloc(NULL,length*sizeof(unichar));
     if (unicode == NULL) {
-        NSLog(@"%@: failed to allocate buffer of size %d", NSStringFromSelector(_cmd), length);
+        NSLog(@"%@: failed to allocate buffer of size %zu", NSStringFromSelector(_cmd), length);
         return 0;
      }
 

@@ -9,18 +9,23 @@ override NDK := $(realpath $(wildcard $(NDK)))
 
 CLANG_VERSION ?= 3.5
 
-ABIS ?= armeabi-v7a armeabi-v7a-hard x86 mips x86_64
+ABIS ?= armeabi-v7a armeabi-v7a-hard x86 x86_64
 
 #==== Settings =========================================================================
 
 # $1: ABI
 define sources
 $(strip \
+	$(wildcard $(TOPDIR)/CFNetwork/CF*.m) \
 	$(wildcard $(TOPDIR)/CoreFoundation/CF*.m)\
-	$(wildcard $(TOPDIR)/Foundation/NS*.m) \
 	$(wildcard $(TOPDIR)/Foundation/NS**/CF*.m) \
 	$(wildcard $(TOPDIR)/Foundation/NS**/NS*.m) \
+	$(wildcard $(TOPDIR)/Foundation/NS*.m) \
+	$(wildcard $(TOPDIR)/Foundation/NSNetService/bonjour.m) \
+	$(wildcard $(TOPDIR)/Foundation/NSObject/forwarding.m) \
 	$(wildcard $(TOPDIR)/Foundation/NSObject/objc_size_alignment.m) \
+	$(wildcard $(TOPDIR)/Foundation/platform_android/NS*.m) \
+	$(wildcard $(TOPDIR)/Foundation/platform_posix/NS*.m) \
 	$(wildcard $(TOPDIR)/Foundation/xml/NS*.m) \
 )
 endef
@@ -32,8 +37,12 @@ $(strip \
 		$(addprefix $(notdir $(__dir))/,$(shell cd $(__dir) && ls -1 NS*.h 2>/dev/null)) \
 		$(addprefix $(notdir $(__dir))/,$(shell cd $(__dir) && ls -1 CF*.h 2>/dev/null)) \
 	)\
+	$(addprefix platform_android/,$(shell cd $(TOPDIR)/Foundation/platform_android && ls -1 NS*.h 2>/dev/null)) \
+	$(addprefix platform_posix/,$(shell cd $(TOPDIR)/Foundation/platform_posix && ls -1 NS*.h 2>/dev/null)) \
 	$(addprefix xml/,$(shell cd $(TOPDIR)/Foundation/xml && ls -1 NS*.h 2>/dev/null)) \
 	NSCharacterSet/bitmapRepresentation.h \
+	NSNetService/bonjour.h \
+	NSObject/forwarding.h \
 	NSObject/objc_size_alignment.h \
 )
 endef
@@ -42,6 +51,7 @@ endef
 define commonflags
 $(strip \
 	-fblocks \
+	-fintegrated-as \
 	-fpic \
 	-O2 -g \
 	-Werror \
@@ -59,6 +69,15 @@ $(strip \
 	-I$(MYDIR)/gen/include \
 	-I$(MYDIR)/include \
 	-I$(TOPDIR) \
+)
+endef
+
+# $1: ABI
+define ldflags
+$(strip \
+	-Wl,--no-undefined \
+	-fpic \
+	-O2 -g \
 )
 endef
 
@@ -237,6 +256,11 @@ $(call tc-bin,$(1),clang++)
 endef
 
 # $1: ABI
+define ar
+$(call tc-bin,$(1),llvm-ar)
+endef
+
+# $1: ABI
 # $2: source file
 define compiler-for
 $(strip $(if $(and $(strip $(1)),$(strip $(2))),\
@@ -336,6 +360,21 @@ endef
 define add-target-rule
 $$(call target,$(1),$(2)): $$(call objfiles,$(2)) $$(additional-dependencies)
 	@echo "$(if $(filter static,$(1)),AR,LD) [$(2)] $$(subst $$(abspath $$(TOPDIR))/,,$$@)"
+	@mkdir -p $$(dir $$@)
+	@rm -f $$@
+	$$(hide)$$(strip $$(if $$(filter static,$(1)),\
+		$$(call ar,$(2)) crs $$@ $$(filter-out $$(MAKEFILE_LIST),$$^),\
+		$$(call cc,$(2)) \
+			-shared -Wl,-soname,$$(notdir $$@) \
+			--sysroot=$$(call sysroot,$(2)) \
+			-L$$(call sysroot,$(2))/usr/lib \
+			-L$$(NDK)/sources/crystax/libs/$(2) \
+			-L$$(NDK)/sources/objc/libobjc2/libs/$(2) \
+			$$(call objfiles,$(2)) \
+			$$(call ldflags,$(2)) \
+			-lobjc \
+			-o $$@ \
+		))
 
 .PHONY: all
 all: $$(call target,$(1),$(2))
@@ -375,7 +414,7 @@ endif
 
 
 $$(__dstdir)/$$(notdir $(1)): $$(TOPDIR)/Foundation/$$(strip $(1)) | $$(__dstdir)
-	$$(hode)cp -f $$< $$@
+	$$(hode)ln -sf $$< $$@
 endef
 
 #=======================================================================================

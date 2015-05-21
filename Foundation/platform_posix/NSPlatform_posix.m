@@ -5,7 +5,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
-#if defined(LINUX) || defined(__APPLE__)
+#if defined(LINUX) || defined(__APPLE__) || defined(__ANDROID__)
 #import <objc/runtime.h>
 #import <Foundation/Foundation.h>
 #import <Foundation/NSSelectInputSourceSet.h>
@@ -25,7 +25,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 #include <pwd.h>
 #include <unistd.h>
+#if !defined(__ANDROID__)
 #import <rpc/types.h>
+#endif
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -100,8 +102,12 @@ static struct passwd *pwent = NULL;
 }
 
 -(NSString *)fullUserName {
+#if __ANDROID__
+    return [self userName];
+#else
     [self _checkAndGetPWEnt];
     return [NSString stringWithCString:pwent->pw_gecos];
+#endif
 }
 
 -(NSString *)homeDirectory {

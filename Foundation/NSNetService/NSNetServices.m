@@ -382,7 +382,7 @@ static BONJOUR_CALL void RegistrationCallback(bonjour_DNSServiceRef sdRef,bonjou
     used = strlen(keyCString);
 
     if( ! length || (used >= sizeof keyCString) ){
-     NSLog(@"incorrect length %d - %d - %d", length, used, sizeof keyCString);
+     NSLog(@"incorrect length %zd - %zu - %zu", length, used, sizeof keyCString);
      break;
     }
 
@@ -396,7 +396,7 @@ static BONJOUR_CALL void RegistrationCallback(bonjour_DNSServiceRef sdRef,bonjou
           used = strlen(cString);
 
           if( used >= sizeof cString ){
-            NSLog(@"incorrect length %d - %d - %d", length, used, sizeof cString);
+            NSLog(@"incorrect length %zd - %zu - %zu", length, used, sizeof cString);
             break;
           }
 
@@ -507,7 +507,7 @@ static BONJOUR_CALL void RegistrationCallback(bonjour_DNSServiceRef sdRef,bonjou
   }
   else
   {
-    NSLog(@"Incorrect length %d", len);
+    NSLog(@"Incorrect length %zd", len);
   }
   return result;
 }

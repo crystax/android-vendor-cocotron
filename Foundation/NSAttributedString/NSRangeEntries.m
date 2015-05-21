@@ -373,13 +373,12 @@ void NSRangeEntriesDivideAndConquer(NSRangeEntries *self,NSRange range) {
 	}
 }
 
- void NSRangeEntriesDump(NSRangeEntries *self) {
-   NSInteger i;
-
-NSLog(@"DUMP BEGIN");
-   for(i=0;i<self->count;i++)
-    NSLog(@"**** %d %d %p",self->entries[i].range.location, self->entries[i].range.length,self->entries[i].value);
-NSLog(@"DUMP END");
+void NSRangeEntriesDump(NSRangeEntries *self) {
+    NSInteger i;
+    NSLog(@"DUMP BEGIN");
+    for(i=0;i<self->count;i++)
+        NSLog(@"**** %zu %zu %p",self->entries[i].range.location, self->entries[i].range.length,self->entries[i].value);
+    NSLog(@"DUMP END");
 }
 
 

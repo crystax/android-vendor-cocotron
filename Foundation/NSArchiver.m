@@ -415,7 +415,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
    _pass=0;
    [self _appendObject:rootObject conditional:NO];
    if(_position!=0)
-    NSLog(@"_position=%d",_position);
+    NSLog(@"_position=%zu",_position);
 
    if(NSHashGet(_conditionals,rootObject)==NULL)
     NSLog(@"rootObject not in conditionals");

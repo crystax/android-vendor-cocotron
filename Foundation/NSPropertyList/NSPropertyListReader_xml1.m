@@ -89,12 +89,12 @@ NSDate* NSDateFromPlistString(NSString* string)
    NSUInteger      i,length=[string length],resultLength=0;
     unichar       *buffer = NSZoneMalloc(NULL, sizeof(unichar)*length);
     if (buffer == NULL) {
-        NSLog(@"%@: failed to allocate buffer of size %d", NSStringFromSelector(_cmd), length);
+        NSLog(@"%@: failed to allocate buffer of size %zu", NSStringFromSelector(_cmd), length);
         return nil;
     }
    uint8_t       *result = NSZoneMalloc(NULL, sizeof(uint8_t)*length);
     if (result == NULL) {
-        NSLog(@"%@: failed to allocate buffer of size %d", NSStringFromSelector(_cmd), length);
+        NSLog(@"%@: failed to allocate buffer of size %zu", NSStringFromSelector(_cmd), length);
         NSZoneFree(NULL, buffer);
         return nil;        
     }

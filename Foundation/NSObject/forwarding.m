@@ -31,7 +31,7 @@ static void OBJCRaiseException(const char *name,const char *format,...) {
 @end
 
 @interface NSInvocation(private)
-+(NSInvocation *)invocationWithMethodSignature:(NSMethodSignature *)signature arguments:(void *)arguments;
++(NSInvocation *)invocationWithMethodSignature:(NSMethodSignature *)signature arguments:(va_list)arguments;
 @end
 
 #ifndef GCC_RUNTIME_3

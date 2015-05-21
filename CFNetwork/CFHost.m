@@ -16,6 +16,10 @@
 
 #include <pthread.h>
 
+#if defined(__ANDROID__)
+#include <netdb.h> // for MAXHOSTNAMELEN
+#endif
+
 #if defined(WIN32) || defined(LINUX)
 #define MAXHOSTNAMELEN 512
 #endif
