@@ -422,7 +422,8 @@ __dstdir := $$(MYDIR)/gen/include/Foundation
 gen-sources: $$(__dstdir)/$$(notdir $$(__relsrc))
 
 $$(__dstdir)/$$(notdir $$(__relsrc)): $(1) | $$(__dstdir)
-	$$(hode)ln -sf $$< $$@
+	@echo "GEN $$(patsubst $$(MYDIR)/gen/include/%,%,$$@)"
+	$$(hide)ln -sf $$< $$@
 
 $$(eval $$(call add-mkdir-rule,$$(__dstdir)))
 endef
