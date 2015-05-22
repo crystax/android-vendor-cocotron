@@ -9,7 +9,7 @@ override NDK := $(realpath $(wildcard $(NDK)))
 
 CLANG_VERSION ?= 3.5
 
-ABIS ?= armeabi-v7a armeabi-v7a-hard x86 x86_64
+ABIS ?= armeabi armeabi-v7a armeabi-v7a-hard x86 x86_64
 
 #==== Settings =========================================================================
 
