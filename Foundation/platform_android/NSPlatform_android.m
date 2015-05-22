@@ -8,6 +8,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #ifdef __ANDROID__
 #import <objc/runtime.h>
 #import <Foundation/Foundation.h>
+#import <Foundation/NSRaise.h>
 #import "NSPlatform_android.h"
 
 #include <unistd.h>
@@ -61,5 +62,15 @@ NSString * const NSPlatformLoadableObjectFilePrefix=@"lib";
 
 char **NSPlatform_environ() {   
    return environ;
+}
+
+int backtrace(void** array, int size) {
+    NSUnimplementedFunction();
+    return 0;
+}
+
+char** backtrace_symbols(void* const* array, int size) {
+    NSUnimplementedFunction();
+    return NULL;
 }
 #endif

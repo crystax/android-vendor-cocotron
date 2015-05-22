@@ -27,7 +27,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 void *NSAllocateMemoryPages(NSUInteger byteCount) {
     void *buffer = malloc(byteCount);
     if (buffer == NULL) {
-        fprintf(stderr, "NSAllocateMemoryPages(%u) failed. Error: %s\n", byteCount, strerror(errno));
+        fprintf(stderr, "NSAllocateMemoryPages(%zu) failed. Error: %s\n", byteCount, strerror(errno));
     }
     return buffer;
 }
@@ -71,7 +71,7 @@ NSZone *NSZoneFromPointer(void *pointer){
 void *NSZoneCalloc(NSZone *zone,NSUInteger numElems,NSUInteger numBytes){
     void *buffer = calloc(numElems,numBytes);
     if (buffer == NULL) {
-        fprintf(stderr, "NSZoneCalloc(zone, %u, %u) failed. Error: %s\n", numElems, numBytes, strerror(errno));
+        fprintf(stderr, "NSZoneCalloc(zone, %zu, %zu) failed. Error: %s\n", numElems, numBytes, strerror(errno));
     }
     return buffer;
 }
@@ -83,7 +83,7 @@ void NSZoneFree(NSZone *zone,void *pointer){
 void *NSZoneMalloc(NSZone *zone,NSUInteger size){
    void *buffer = malloc(size);
     if (buffer == NULL) {
-        fprintf(stderr, "NSZoneMalloc(zone, %u) failed. Error: %s\n", size, strerror(errno));
+        fprintf(stderr, "NSZoneMalloc(zone, %zu) failed. Error: %s\n", size, strerror(errno));
     }
     return buffer;
 }
@@ -91,7 +91,7 @@ void *NSZoneMalloc(NSZone *zone,NSUInteger size){
 void *NSZoneRealloc(NSZone *zone,void *pointer,NSUInteger size){
     void *buffer = realloc(pointer, size);
     if (buffer == NULL && size > 0) {
-        fprintf(stderr, "NSZoneRealloc(zone, %p, %u) failed. Error: %s\n", pointer, size, strerror(errno));
+        fprintf(stderr, "NSZoneRealloc(zone, %p, %zu) failed. Error: %s\n", pointer, size, strerror(errno));
     }
     return buffer;
 }

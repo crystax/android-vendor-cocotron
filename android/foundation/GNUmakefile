@@ -15,35 +15,38 @@ ABIS ?= armeabi-v7a armeabi-v7a-hard x86 x86_64
 
 # $1: ABI
 define sources
-$(strip \
-	$(wildcard $(TOPDIR)/CFNetwork/CF*.m) \
-	$(wildcard $(TOPDIR)/CoreFoundation/CF*.m)\
-	$(wildcard $(TOPDIR)/Foundation/NS**/CF*.m) \
-	$(wildcard $(TOPDIR)/Foundation/NS**/NS*.m) \
-	$(wildcard $(TOPDIR)/Foundation/NS*.m) \
-	$(wildcard $(TOPDIR)/Foundation/NSNetService/bonjour.m) \
-	$(wildcard $(TOPDIR)/Foundation/NSObject/forwarding.m) \
-	$(wildcard $(TOPDIR)/Foundation/NSObject/objc_size_alignment.m) \
-	$(wildcard $(TOPDIR)/Foundation/platform_android/NS*.m) \
-	$(wildcard $(TOPDIR)/Foundation/platform_posix/NS*.m) \
-	$(wildcard $(TOPDIR)/Foundation/xml/NS*.m) \
-)
+$(strip $(wildcard $(addprefix $(TOPDIR)/,\
+	CFNetwork/CF*.m \
+	CoreFoundation/CF*.m \
+	Foundation/NS**/CF*.m \
+	Foundation/NS**/NS*.m \
+	Foundation/NS*.m \
+	Foundation/NSNetService/bonjour.m \
+	Foundation/NSObject/forwarding.m \
+	Foundation/NSObject/objc_msg_sendv-Disabled.m \
+	Foundation/NSObject/objc_size_alignment.m \
+	Foundation/platform_android/NS*.m \
+	Foundation/platform_posix/NS*.m \
+	Foundation/xml/NS*.m \
+)))
 endef
 
 define headers
 $(strip \
-	$(shell cd $(TOPDIR)/Foundation && ls -1 Foundation*.h 2>/dev/null) \
-	$(foreach __dir,$(shell find $(TOPDIR)/Foundation -name 'NS*' -a -type d -print),\
-		$(addprefix $(notdir $(__dir))/,$(shell cd $(__dir) && ls -1 NS*.h 2>/dev/null)) \
-		$(addprefix $(notdir $(__dir))/,$(shell cd $(__dir) && ls -1 CF*.h 2>/dev/null)) \
-	)\
-	$(addprefix platform_android/,$(shell cd $(TOPDIR)/Foundation/platform_android && ls -1 NS*.h 2>/dev/null)) \
-	$(addprefix platform_posix/,$(shell cd $(TOPDIR)/Foundation/platform_posix && ls -1 NS*.h 2>/dev/null)) \
-	$(addprefix xml/,$(shell cd $(TOPDIR)/Foundation/xml && ls -1 NS*.h 2>/dev/null)) \
-	NSCharacterSet/bitmapRepresentation.h \
-	NSNetService/bonjour.h \
-	NSObject/forwarding.h \
-	NSObject/objc_size_alignment.h \
+	$(foreach __dir,$(wildcard $(TOPDIR)/Foundation/NS*),\
+		$(wildcard $(__dir)/NS*.h) \
+		$(wildcard $(__dir)/CF*.h) \
+	) \
+	$(wildcard $(addprefix $(TOPDIR)/Foundation/,\
+		Foundation*.h \
+		NSCharacterSet/bitmapRepresentation.h \
+		NSNetService/bonjour.h \
+		NSObject/forwarding.h \
+		NSObject/objc_size_alignment.h \
+		platform_android/NS*.h \
+		platform_posix/NS*.h \
+		xml/NS*.h \
+	)) \
 )
 endef
 
@@ -65,6 +68,7 @@ $(strip \
 	-DOBJC_INSIDE_BUILD \
 	-DPLATFORM_IS_POSIX \
 	-DPLATFORM_USES_BSD_SOCKETS \
+	-DCOCOTRON_DISALLOW_FORWARDING \
 	-I$(NDK)/sources/objc/libobjc2/include \
 	-I$(MYDIR)/gen/include \
 	-I$(MYDIR)/include \
@@ -154,7 +158,7 @@ endef
 # $1: ABI
 define targetdir
 $(strip $(if $(strip $(1)),\
-    $(targetroot)/lib/$(strip $(1)),\
+    $(targetroot)/$(strip $(1)),\
     $(error Usage: call targetdir,abi)\
 ))
 endef
@@ -338,14 +342,14 @@ $(strip $(if $(filter 1,$(words $(1))),\
 ))
 endef
 
-define additional-dependencies
+define makefiles
 $(filter-out %.d,$(MAKEFILE_LIST))
 endef
 
 # $1: ABI
 # $2: source file
 define add-objfile-rule
-$$(call objdir,$(1))/$$(call objfile,$(2)): $$(abspath $(2)) $$(additional-dependencies)
+$$(call objdir,$(1))/$$(call objfile,$(2)): $$(abspath $(2)) $$(makefiles)
 	@echo "CC [$(1)] $$(subst $$(abspath $$(TOPDIR))/,,$(2))"
 	@mkdir -p $$(dir $$@)
 	$$(hide)$$(call compiler-for,$(1),$$<) \
@@ -358,16 +362,17 @@ endef
 # $1: type (static or shared)
 # $2: ABI
 define add-target-rule
-$$(call target,$(1),$(2)): $$(call objfiles,$(2)) $$(additional-dependencies)
+$$(call target,$(1),$(2)): $$(call objfiles,$(2)) $$(makefiles)
 	@echo "$(if $(filter static,$(1)),AR,LD) [$(2)] $$(subst $$(abspath $$(TOPDIR))/,,$$@)"
 	@mkdir -p $$(dir $$@)
 	@rm -f $$@
 	$$(hide)$$(strip $$(if $$(filter static,$(1)),\
-		$$(call ar,$(2)) crs $$@ $$(filter-out $$(MAKEFILE_LIST),$$^),\
+		$$(call ar,$(2)) crs $$@ $$(filter-out $$(makefiles),$$^),\
 		$$(call cc,$(2)) \
 			-shared -Wl,-soname,$$(notdir $$@) \
+			$(if $(filter armeabi-v7a-hard,$(2)),-Wl$(comma)--no-warn-mismatch) \
 			--sysroot=$$(call sysroot,$(2)) \
-			-L$$(call sysroot,$(2))/usr/lib \
+			-L$$(call sysroot,$(2))/usr/$(if $(filter x86_64,$(2)),lib64,lib) \
 			-L$$(NDK)/sources/crystax/libs/$(2) \
 			-L$$(NDK)/sources/objc/libobjc2/libs/$(2) \
 			$$(call objfiles,$(2)) \
@@ -399,22 +404,27 @@ all: gen-sources
 	)
 endef
 
-# $1: source file
-define add-gen-header-rule
-__dstdir := $$(MYDIR)/gen/include/Foundation
-
-gen-sources: $$(__dstdir)/$$(notdir $(1))
-
-ifeq (,$$(CRYSTAX_DIR_CREATED.$$(subst /,.,$$(__dstdir))))
-$$(__dstdir):
+# $1: directory
+define add-mkdir-rule
+ifeq (,$$(__mkdir_rule_added.$(1)))
+$(1):
 	$$(hide)mkdir -p $$@
 
-$$(eval CRYSTAX_DIR_CREATED.$$(subst /,.,$$(__dstdir)) := yes)
+$$(eval __mkdir_rule_added.$(1) := yes)
 endif
+endef
 
+# $1: source file
+define add-gen-header-rule
+__relsrc := $$(patsubst $$(TOPDIR)/Foundation/%,%,$(1))
+__dstdir := $$(MYDIR)/gen/include/Foundation
 
-$$(__dstdir)/$$(notdir $(1)): $$(TOPDIR)/Foundation/$$(strip $(1)) | $$(__dstdir)
+gen-sources: $$(__dstdir)/$$(notdir $$(__relsrc))
+
+$$(__dstdir)/$$(notdir $$(__relsrc)): $(1) | $$(__dstdir)
 	$$(hode)ln -sf $$< $$@
+
+$$(eval $$(call add-mkdir-rule,$$(__dstdir)))
 endef
 
 #=======================================================================================
