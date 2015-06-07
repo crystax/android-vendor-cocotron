@@ -7,7 +7,7 @@ endif
 
 override NDK := $(realpath $(wildcard $(NDK)))
 
-CLANG_VERSION ?= 3.5
+CLANG_VERSION ?= 3.6
 
 ABIS ?= armeabi armeabi-v7a armeabi-v7a-hard x86 x86_64
 
