@@ -28,7 +28,7 @@ FRAMEWORK ?= $(notdir $(MYDIR))
 
 CLANG_VERSION ?= 3.6
 
-ABIS ?= armeabi-v7a armeabi-v7a-hard x86 x86_64
+ABIS ?= armeabi-v7a armeabi-v7a-hard x86 mips x86_64
 
 # $1: ABI
 define commonflags

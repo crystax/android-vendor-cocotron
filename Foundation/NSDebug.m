@@ -89,6 +89,11 @@ unsigned NSCountFrames(void)
 
 void *NSReturnAddress(int level)
 {
+#if __mips__
+    // __builtin_return_address doesn't work on MIPS properly
+    // See https://llvm.org/bugs/show_bug.cgi?id=19970 for details
+    return NULL;
+#else
     switch (level) {
             _NS_RETURN_ADDRESS(0);
             _NS_RETURN_ADDRESS(1);
@@ -145,4 +150,5 @@ void *NSReturnAddress(int level)
     }
 
     return NULL;
+#endif // !__mips__
 }
