@@ -1,1 +1,1 @@
-../../../../../libobjc2/class.h
+../../vendor/libobjc2/class.h

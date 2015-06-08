@@ -3,8 +3,8 @@
 #import <string.h>
 #if __ANDROID__
 #include <objc/class.h>
-#include <compiler_rt/Block_private.h>
-#include <compiler_rt/Block.h>
+#include <compiler-rt/Block_private.h>
+#include <compiler-rt/Block.h>
 #else
 #include <ringo/compiler_rt/Block_private.h>
 #include <ringo/compiler_rt/Block.h>
