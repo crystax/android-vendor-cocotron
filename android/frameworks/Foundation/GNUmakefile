@@ -1,5 +1,5 @@
 MYDIR := $(abspath $(dir $(firstword $(MAKEFILE_LIST))))
-TOPDIR := $(abspath $(MYDIR)/../..)
+TOPDIR := $(abspath $(MYDIR)/../../..)
 
 SOURCES := $(strip $(wildcard $(addprefix $(TOPDIR)/,\
 	CFNetwork/CF*.m \
