@@ -28,6 +28,8 @@ NSString * const NSMallocException=@"NSMallocException";
 NSString * const NSParseErrorException=@"NSParseErrorException";
 NSString * const NSInconsistentArchiveException=@"NSInconsistentArchiveException";
 
+void objc_exception_throw(id exception);
+
 @implementation NSException
 
 +(void)raise:(NSString *)name format:(NSString *)format,... {

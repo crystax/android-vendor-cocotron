@@ -4,6 +4,10 @@
 #import <objc/message.h>
 #import <pthread.h>
 
+#if __ANDROID__
+#import <objc/objc-arc.h>
+#endif
+
 typedef unsigned long objc_uinteger;
 typedef signed long objc_integer;
 
@@ -194,6 +198,9 @@ static void objc_autoreleaseSetCurrentPool(objc_autoreleasepool *pool) {
     objc_tlsCurrent()->pool = pool;
 }
 
+#ifdef PAGESIZE
+#undef PAGESIZE
+#endif
 #define PAGESIZE 1024
 
 void *objc_autoreleasePoolPush() {

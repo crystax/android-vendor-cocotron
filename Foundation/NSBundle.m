@@ -403,7 +403,7 @@ static NSMapTable *pathToObject=NULL;
         const char *module = getenv("CFProcessPath");
         if (!module) {
 #if defined(GCC_RUNTIME_3) || defined(APPLE_RUNTIME_4)
-            ssize_t bufSize = MAXPATHLEN;
+            uint32_t bufSize = MAXPATHLEN;
             char *executablePath = alloca(bufSize + 1);
             if (_NSGetExecutablePath(executablePath, &bufSize) < 0) {
                 executablePath = alloca(bufSize + 1);

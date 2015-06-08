@@ -36,16 +36,21 @@ int _NSGetExecutablePath(char *path, uint32_t *capacity) {
 
 // FIXME: these implementations do not return the size needed
 
-#elif defined(LINUX)
+#elif defined(LINUX) || defined(__ANDROID__)
+
+#include <unistd.h>
 
 int _NSGetExecutablePath(char *path, uint32_t *capacity) {
+    int rc;
     if(*capacity < MAXPATHLEN)
         return MAXPATHLEN;
 
-    if((*capacity = readlink("/proc/self/exe", path, *capacity)) < 0) {
+    if((rc = readlink("/proc/self/exe", path, *capacity)) < 0) {
         *capacity = 0;
         return -1;
     }
+
+    *capacity = rc;
 
     return 0;
 }

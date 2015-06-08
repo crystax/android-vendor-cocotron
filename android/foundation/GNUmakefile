@@ -28,10 +28,26 @@ $(strip $(wildcard $(addprefix $(TOPDIR)/,\
 	Foundation/platform_android/NS*.m \
 	Foundation/platform_posix/NS*.m \
 	Foundation/xml/NS*.m \
+	objc/dyld.c \
+	objc/objc_arc.c \
+	objc/objc_exception.c \
+	objc/objc_tls.c \
 )))
 endef
 
-define headers
+define cfnetwork-headers
+$(wildcard $(TOPDIR)/CFNetwork/*.h)
+endef
+
+define corefoundation-headers
+$(wildcard $(TOPDIR)/CoreFoundation/*.h)
+endef
+
+define coreservices-headers
+$(wildcard $(TOPDIR)/CoreServices/*.h)
+endef
+
+define foundation-headers
 $(strip \
 	$(foreach __dir,$(wildcard $(TOPDIR)/Foundation/NS*),\
 		$(wildcard $(__dir)/NS*.h) \
@@ -39,6 +55,7 @@ $(strip \
 	) \
 	$(wildcard $(addprefix $(TOPDIR)/Foundation/,\
 		Foundation*.h \
+		NS*.h \
 		NSCharacterSet/bitmapRepresentation.h \
 		NSNetService/bonjour.h \
 		NSObject/forwarding.h \
@@ -72,7 +89,6 @@ $(strip \
 	-I$(NDK)/sources/objc/libobjc2/include \
 	-I$(MYDIR)/gen/include \
 	-I$(MYDIR)/include \
-	-I$(TOPDIR) \
 )
 endef
 
@@ -415,9 +431,10 @@ endif
 endef
 
 # $1: source file
+# $2: category
 define add-gen-header-rule
-__relsrc := $$(patsubst $$(TOPDIR)/Foundation/%,%,$(1))
-__dstdir := $$(MYDIR)/gen/include/Foundation
+__relsrc := $$(patsubst $$(TOPDIR)/$(2)/%,%,$(1))
+__dstdir := $$(MYDIR)/gen/include/$(2)
 
 gen-sources: $$(__dstdir)/$$(notdir $$(__relsrc))
 
@@ -444,8 +461,17 @@ clean:
 .PHONY: gen-sources
 gen-sources:
 
-$(foreach __h,$(headers),\
-    $(eval $(call add-gen-header-rule,$(__h)))\
+$(foreach __h,$(cfnetwork-headers),\
+    $(eval $(call add-gen-header-rule,$(__h),CFNetwork))\
+)
+$(foreach __h,$(corefoundation-headers),\
+    $(eval $(call add-gen-header-rule,$(__h),CoreFoundation))\
+)
+$(foreach __h,$(coreservices-headers),\
+    $(eval $(call add-gen-header-rule,$(__h),CoreServices))\
+)
+$(foreach __h,$(foundation-headers),\
+    $(eval $(call add-gen-header-rule,$(__h),Foundation))\
 )
 
 ifeq (yes,$(CRYSTAX_EVAL_RULES))
