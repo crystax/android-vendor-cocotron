@@ -87,8 +87,8 @@ $(strip \
 	-DPLATFORM_USES_BSD_SOCKETS \
 	-DCOCOTRON_DISALLOW_FORWARDING \
 	-I$(NDK)/sources/objc/libobjc2/include \
-	-I$(MYDIR)/gen/include \
 	-I$(MYDIR)/include \
+	-I$(genroot)/include \
 )
 endef
 
@@ -151,16 +151,20 @@ define host-arch
 $(shell uname -m)
 endef
 
+define outdir
+$(or $(strip $(OUT)),$(MYDIR))
+endef
+
 define objroot
-$(MYDIR)/obj
+$(outdir)/obj
 endef
 
 define targetroot
-$(MYDIR)/lib
+$(outdir)/lib
 endef
 
-define auto-generated-sources
-$(MYDIR)/gen
+define genroot
+$(outdir)/gen
 endef
 
 # $1: ABI
@@ -434,12 +438,12 @@ endef
 # $2: category
 define add-gen-header-rule
 __relsrc := $$(patsubst $$(TOPDIR)/$(2)/%,%,$(1))
-__dstdir := $$(MYDIR)/gen/include/$(2)
+__dstdir := $$(genroot)/include/$(2)
 
 gen-sources: $$(__dstdir)/$$(notdir $$(__relsrc))
 
 $$(__dstdir)/$$(notdir $$(__relsrc)): $(1) | $$(__dstdir)
-	@echo "GEN $$(patsubst $$(MYDIR)/gen/include/%,%,$$@)"
+	@echo "GEN $$(patsubst $$(genroot)/include/%,%,$$@)"
 	$$(hide)ln -sf $$< $$@
 
 $$(eval $$(call add-mkdir-rule,$$(__dstdir)))
@@ -455,7 +459,7 @@ clean:
 	$(call rm-if-exists,$(strip \
 		$(targetroot) \
 		$(objroot) \
-		$(auto-generated-sources) \
+		$(genroot) \
 	))
 
 .PHONY: gen-sources
