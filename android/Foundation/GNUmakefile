@@ -48,4 +48,4 @@ RESOURCES := $(strip \
 	))\
 )
 
-include $(MYDIR)/../build.mk
+include $(TOPDIR)/android/build.mk
