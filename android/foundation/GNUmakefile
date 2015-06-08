@@ -58,6 +58,15 @@ $(strip \
 )
 endef
 
+define resources
+$(strip \
+	$(wildcard $(addprefix $(TOPDIR)/Foundation/,\
+		English.lproj/NSUserDefaults.plist \
+		NSTimeZone/NSTimeZoneAbbreviations.plist \
+	))\
+)
+endef
+
 # $1: ABI
 define commonflags
 $(strip \
@@ -126,6 +135,10 @@ define rm-if-exists
 $(if $(wildcard $(1)),rm -Rf $(wildcard $(1)))
 endef
 
+define link
+rm -f $(2) && ln -s $(1) $(2)
+endef
+
 define hide
 $(if $(filter 1,$(V)),,@)
 endef
@@ -169,7 +182,7 @@ endef
 # $1: ABI
 define targetdir
 $(strip $(if $(strip $(1)),\
-    $(targetroot)/$(strip $(1)),\
+    $(targetroot)/$(strip $(1))/Foundation.framework,\
     $(error Usage: call targetdir,abi)\
 ))
 endef
@@ -191,7 +204,7 @@ endef
 # $1: type (static or shared)
 # $2: ABI
 define target
-$(call targetdir,$(2))/libFoundation.$(subst shared,so,$(subst static,a,$(strip $(1))))
+$(call targetdir,$(2))/Versions/A/libFoundation.$(subst shared,so,$(subst static,a,$(strip $(1))))
 endef
 
 # $1: ABI
@@ -373,7 +386,10 @@ endef
 # $1: type (static or shared)
 # $2: ABI
 define add-target-rule
-$$(call target,$(1),$(2)): $$(call objfiles,$(2)) $$(makefiles)
+__target := $$(call target,$(1),$(2))
+__dstdir := $$(dir $$(__target))
+
+$$(__target): $$(call objfiles,$(2)) $$(resources) $$(makefiles) | $$(__dstdir)
 	@echo "$(if $(filter static,$(1)),AR,LD) [$(2)] $$(subst $$(abspath $$(outdir))/,,$$@)"
 	@mkdir -p $$(dir $$@)
 	@rm -f $$@
@@ -391,12 +407,23 @@ $$(call target,$(1),$(2)): $$(call objfiles,$(2)) $$(makefiles)
 			-lobjc \
 			-o $$@ \
 		))
+	$$(hide)$$(call link,Versions/Current/Foundation,$$(call targetdir,$(2))/Foundation)
+	$$(hide)$$(call link,A,$$(call targetdir,$(2))/Versions/Current)
+	$$(hide)$$(if $$(filter static,$(1)),,$$(call link,$$(notdir $$@),$$(call targetdir,$(2))/Versions/A/Foundation))
+	$$(hide)rm -Rf $$(call targetdir,$(2))/Resources
+	$$(hide)mkdir -p $$(call targetdir,$(2))/Resources
+	$$(hide)$$(foreach __f,$$(resources),\
+			cp $$(__f) $$(call targetdir,$(2))/Resources/ || exit 1; \
+		)
+
+$$(eval $$(call add-mkdir-rule,$$(__dstdir)))
 
 .PHONY: all
-all: $$(call target,$(1),$(2))
+all: $$(__target)
 
 .PHONY: $(1)-$(2)
-$(1)-$(2): $$(call target,$(1),$(2))
+$(1)-$(2): $$(__target)
+
 endef
 
 # $1: type (static or shared)
