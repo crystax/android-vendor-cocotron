@@ -10,7 +10,7 @@ PROJECTS := $(subst $(FRAMEWORKS)/,,$(foreach __f,$(wildcard $(FRAMEWORKS)/*/GNU
 define project-dependencies
 $(strip \
 	$(foreach __d,\
-		$(shell $(MAKE) --no-print-directory -C $(FRAMEWORKS)/$(1) dump-dependencies NDK=$(NDK)),\
+		$(shell $(MAKE) --no-print-directory -C $(FRAMEWORKS)/$(1) dump-dependencies DONT_EVAL_RULES=yes NDK=$(NDK)),\
 		$(call project-dependencies,$(__d)) \
 		$(__d) \
 	)\
@@ -32,15 +32,20 @@ DEPENDENCIES := $(strip \
 
 .PHONY: all
 all:
-	@+$(foreach __p,$(DEPENDENCIES),\
-		$(MAKE) -C $(FRAMEWORKS)/$(__p) BUILD_DEPENDENCIES=no || exit 1; \
-	)
 
 .PHONY: clean
 clean:
-	@+$(foreach __p,$(DEPENDENCIES),\
-		$(MAKE) -C $(FRAMEWORKS)/$(__p) BUILD_DEPENDENCIES=no clean || exit 1; \
+
+.PHONY: install
+install:
+
+define add-common-rule
+.PHONY: $(1)
+$(1):
+	@+$$(foreach __p,$$(DEPENDENCIES),\
+		$$(MAKE) -C $$(FRAMEWORKS)/$$(__p) BUILD_DEPENDENCIES=no $(1) || exit 1; \
 	)
+endef
 
 define add-project-rule
 .PHONY: $(1)
@@ -52,6 +57,10 @@ clean-$(1):
 	@$$(MAKE) -C $$(FRAMEWORKS)/$(1) clean
 
 endef
+
+$(foreach __a,all clean install,\
+    $(eval $(call add-common-rule,$(__a)))\
+)
 
 $(foreach __p,$(PROJECTS),\
     $(eval $(call add-project-rule,$(__p)))\

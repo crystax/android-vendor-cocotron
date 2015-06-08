@@ -144,7 +144,7 @@ endef
 # $1: ABI
 define objdir
 $(strip $(if $(strip $(1)),\
-    $(objroot)/$(strip $(1)),\
+    $(call objroot)/$(strip $(1)),\
     $(error Usage: call objdir,abi)\
 ))
 endef
@@ -330,11 +330,11 @@ endef
 # $2: source file
 define add-objfile-rule
 $$(call objdir,$(1))/$$(call objfile,$(2)): $$(abspath $(2)) $$(makefiles) | dependencies
-	@echo "CC [$(1)] $$(subst $$(abspath $$(TOPDIR))/,,$(2))"
+	@echo "CC [$(1)] $$(subst $$(abspath $$(TOPDIR))/,,$$<)"
 	@mkdir -p $$(dir $$@)
 	$$(hide)$$(call compiler-for,$(1),$$<) \
 		-MD -MP -MF $$(patsubst %.o,%.d,$$@) \
-		$$(call compiler-flags,$(1),$(2)) \
+		$$(call compiler-flags,$(1),$$<) \
 		--sysroot=$$(call sysroot,$(1)) \
 		-c -o $$@ $$<
 endef
@@ -342,10 +342,7 @@ endef
 # $1: type (static or shared)
 # $2: ABI
 define add-target-rule
-targetdir = $$(targetroot)/$$(1)/$$(FRAMEWORK).framework
-resdir = $$(call targetdir,$$(1))/Resources
-
-__target := $$(call targetdir,$(2))/Versions/A/lib$$(FRAMEWORK).$$(if $$(filter static,$(1)),a,so)
+__target := $$(call targetroot)/$(2)/lib$$(FRAMEWORK).$$(if $$(filter static,$(1)),a,so)
 
 $$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__target)) dependencies
 	@echo "$(if $(filter static,$(1)),AR,LD) [$(2)] $$(subst $$(abspath $$(outdir))/,,$$@)"
@@ -365,16 +362,33 @@ $$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__t
 			-o $$@ \
 		))
 
-.PHONY: install-$(1)-$(2)
-install-$(1)-$(2): $$(__target)
-	$$(hide)$$(call link,Versions/Current/$$(FRAMEWORK),$$(call targetdir,$(2))/$$(FRAMEWORK))
-	$$(hide)$$(call link,A,$$(call targetdir,$(2))/Versions/Current)
-	$$(hide)$$(call link,$$(notdir $$@),$$(call targetdir,$(2))/Versions/A/$$(FRAMEWORK))
-	$$(hide)rm -Rf $$(call resdir,$(2))
-	$$(hide)mkdir -p $$(call resdir,$(2))
+ifneq (static,$(1))
+.PHONY: install-$(2)
+install-$(2): $$(__target)
+	$$(if $$(strip $$(PREFIX)),,$$(error PREFIX is not defined!))
+	$$(eval __installdir := $$(PREFIX)/$(2)/$$(FRAMEWORK).framework)
+	@echo "INSTALL $$(__installdir)"
+	$$(hide)mkdir -p $$(__installdir)/Versions/A
+	$$(hide)$$(call link,A,$$(__installdir)/Versions/Current)
+	$$(hide)rsync -a $$< $$(__installdir)/Versions/Current/
+	$$(hide)$$(call link,Versions/Current/$$(FRAMEWORK),$$(__installdir)/$$(FRAMEWORK))
+	$$(hide)$$(call link,$$(notdir $$<),$$(__installdir)/Versions/Current/$$(FRAMEWORK))
+	$$(eval __headers := $$(call genroot)/include/$$(FRAMEWORK))
+	$$(hide)rm -Rf $$(__installdir)/Versions/Current/Headers
+	$$(hide)mkdir -p $$(__installdir)/Versions/Current/Headers
+	$$(hide)rsync -aL $$(__headers)/ $$(__installdir)/Versions/Current/Headers/
+	$$(hide)$$(call link,Versions/Current/Headers,$$(__installdir)/Headers)
+	$$(eval __resdir := $$(__installdir)/Resources)
+	$$(hide)rm -Rf $$(__resdir)
+	$$(hide)$$(if $$(strip $$(RESOURCES)),mkdir -p $$(__resdir))
 	$$(hide)$$(foreach __f,$$(RESOURCES),\
-			cp $$(__f) $$(call resdir,$(2))/ || exit 1; \
+			cp $$(__f) $$(__resdir)/ || exit 1; \
 		)
+
+.PHONY: install
+install: install-$(2)
+
+endif
 
 $$(eval $$(call add-mkdir-rule,$$(dir $$(__target))))
 
@@ -387,22 +401,6 @@ $(1)-$(2): $$(__target)
 .PHONY: $(1)
 $(1): $$(__target)
 
-endef
-
-# $1: type (static or shared)
-define add-type-build-rule
-.PHONY: $(1)
-$(1): dependencies
-	@+$$(foreach __abi,$$(call abis),\
-		$$(MAKE) -C $$(MYDIR) $(1) CRYSTAX_EVAL_RULES=yes ABIS=$$(__abi) || exit 1; \
-	)
-endef
-
-define add-all-build-rule
-all: dependencies
-	@+$$(foreach __abi,$$(call abis),\
-		$$(MAKE) -C $$(MYDIR) all CRYSTAX_EVAL_RULES=yes ABIS=$$(__abi) || exit 1; \
-	)
 endef
 
 # $1: directory
@@ -449,6 +447,9 @@ all:
 clean:
 	$(call rm-if-exists,$(outdir))
 
+.PHONY: install
+install:
+
 .PHONY: gen-sources
 gen-sources:
 
@@ -459,8 +460,7 @@ dependencies: gen-sources
 dump-dependencies:
 	@echo $(DEPENDENCIES)
 
-ifeq (yes,$(CRYSTAX_EVAL_RULES))
-
+ifneq (yes,$(DONT_EVAL_RULES))
 $(foreach __abi,$(call abis),\
     $(foreach __t,static shared,\
         $(eval $(call add-target-rule,$(__t),$(__abi)))\
@@ -476,13 +476,6 @@ $(foreach __c,\
     $(foreach __h,$(filter $(TOPDIR)/$(__c)/%,$(HEADERS)),\
         $(eval $(call add-gen-header-rule,$(__h),$(__c)))\
     )\
-)
-
-else
-
-$(eval $(call add-all-build-rule))
-$(foreach __t,static shared,\
-    $(evall $(call add-type-build-rule,$(__t)))\
 )
 
 ifneq (no,$(BUILD_DEPENDENCIES))
