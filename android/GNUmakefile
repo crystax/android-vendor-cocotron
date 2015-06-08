@@ -1,4 +1,4 @@
-PROJECTS := foundation
+PROJECTS := Foundation
 
 .PHONY: all
 all: $(PROJECTS)
