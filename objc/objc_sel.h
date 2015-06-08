@@ -24,18 +24,18 @@ static inline const char *objc_getSelectorReferenceName(objc_selector_internal *
     return ref->name;
 }
 
-static inline void objc_setSelectorReferenceName(objc_selector_internal **ref,const char *name) {
-    (*ref)->name=name;
+static inline void objc_setSelectorReferenceName(objc_selector_internal **ref, const char *name) {
+    (*ref)->name = name;
 }
 
 static inline SEL sel_getSelector(SEL selector) {
-    if(selector==NULL)
+    if(selector == NULL)
         return selector;
-        
+
     struct {
         SEL selector;
-    } *typed=(void *)selector;
-    
+    } *typed = (void *)selector;
+
     return typed->selector;
 }
 
@@ -44,11 +44,11 @@ static inline SEL sel_getSelector(SEL selector) {
 typedef SEL objc_selector_internal;
 
 static inline const char *objc_getSelectorReferenceName(objc_selector_internal *ref) {
-    return *ref;
+    return (const char *)(*ref);
 }
 
-static inline void objc_setSelectorReferenceName(objc_selector_internal **ref,const char *name) {
-    **ref=name;
+static inline void objc_setSelectorReferenceName(objc_selector_internal **ref, const char *name) {
+    **ref = (objc_selector_internal)name;
 }
 
 static inline SEL sel_getSelector(SEL selector) {

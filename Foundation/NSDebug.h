@@ -20,6 +20,6 @@ FOUNDATION_EXPORT unsigned NSCountFrames(void);
 FOUNDATION_EXPORT void *NSReturnAddress(int level);
 
 #if defined(__WIN32__) || defined(SOLARIS) || defined(__ANDROID__)
-int backtrace(void** array, int size);
-char** backtrace_symbols(void* const* array, int size);
+int backtrace(void **array, int size);
+char **backtrace_symbols(void *const *array, int size);
 #endif
