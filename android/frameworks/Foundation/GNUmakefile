@@ -2,8 +2,6 @@ MYDIR := $(abspath $(dir $(firstword $(MAKEFILE_LIST))))
 TOPDIR := $(abspath $(MYDIR)/../../..)
 
 SOURCES := $(strip $(wildcard $(addprefix $(TOPDIR)/,\
-	CFNetwork/CF*.m \
-	CoreFoundation/CF*.m \
 	Foundation/NS**/CF*.m \
 	Foundation/NS**/NS*.m \
 	Foundation/NS*.m \
@@ -21,9 +19,6 @@ SOURCES := $(strip $(wildcard $(addprefix $(TOPDIR)/,\
 )))
 
 HEADERS := $(strip \
-	$(wildcard $(TOPDIR)/CFNetwork/*.h) \
-	$(wildcard $(TOPDIR)/CoreFoundation/*.h) \
-	$(wildcard $(TOPDIR)/CoreServices/*.h) \
 	$(foreach __dir,$(wildcard $(TOPDIR)/Foundation/NS*),\
 		$(wildcard $(__dir)/NS*.h) \
 		$(wildcard $(__dir)/CF*.h) \
@@ -47,5 +42,7 @@ RESOURCES := $(strip \
 		NSTimeZone/NSTimeZoneAbbreviations.plist \
 	))\
 )
+
+DEPENDENCIES := CoreFoundation CoreServices CFNetwork
 
 include $(TOPDIR)/android/build.mk

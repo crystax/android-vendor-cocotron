@@ -12,10 +12,6 @@ ifeq (,$(strip $(HEADERS)))
 $(error HEADERS are not defined!)
 endif
 
-ifeq (,$(strip $(RESOURCES)))
-$(error RESOURCES are not defined!)
-endif
-
 ifeq (,$(strip $(TOPDIR)))
 $(error TOPDIR is not defined!)
 endif
@@ -26,11 +22,9 @@ endif
 
 FRAMEWORK ?= $(notdir $(MYDIR))
 
-CLANG_VERSION ?= 3.6
-
-ABIS ?= armeabi-v7a armeabi-v7a-hard x86 mips x86_64
-
 OBJC2 := $(NDK)/sources/objc/libobjc2
+
+include $(TOPDIR)/android/defaults.mk
 
 # $1: ABI
 define commonflags
@@ -53,14 +47,16 @@ $(strip \
 	-DCOCOTRON_DISALLOW_FORWARDING \
 	-I$(OBJC2)/include \
 	-I$(TOPDIR)/android/include \
-	-I$(genroot)/include \
+	$(foreach __d,$(DEPENDENCIES),\
+		-I$(call genroot,$(__d))/include \
+	) \
+	-I$(call genroot)/include \
 )
 endef
 
 # $1: ABI
 define ldflags
 $(strip \
-	-Wl,--no-undefined \
 	-fpic \
 	-O2 -g \
 )
@@ -120,20 +116,29 @@ define host-arch
 $(shell uname -m)
 endef
 
+# $1: module (optional)
 define outdir
-$(if $(OUT),$(OUT)/$(FRAMEWORK),$(MYDIR)/build)
+$(strip \
+	$(if $(OUT),\
+		$(OUT)/$(or $(strip $(1)),$(FRAMEWORK)),\
+		$(TOPDIR)/android/frameworks/$(or $(strip $(1)),$(FRAMEWORK))/build\
+	)\
+)
 endef
 
+# $1: module (optional)
 define objroot
-$(outdir)/obj
+$(call outdir,$(1))/obj
 endef
 
+# $1: module (optional)
 define targetroot
-$(outdir)/lib
+$(call outdir,$(1))/lib
 endef
 
+# $1: module (optional)
 define genroot
-$(outdir)/gen
+$(call outdir,$(1))/gen
 endef
 
 # $1: ABI
@@ -324,7 +329,7 @@ endef
 # $1: ABI
 # $2: source file
 define add-objfile-rule
-$$(call objdir,$(1))/$$(call objfile,$(2)): $$(abspath $(2)) $$(makefiles)
+$$(call objdir,$(1))/$$(call objfile,$(2)): $$(abspath $(2)) $$(makefiles) | dependencies
 	@echo "CC [$(1)] $$(subst $$(abspath $$(TOPDIR))/,,$(2))"
 	@mkdir -p $$(dir $$@)
 	$$(hide)$$(call compiler-for,$(1),$$<) \
@@ -342,7 +347,7 @@ resdir = $$(call targetdir,$$(1))/Resources
 
 __target := $$(call targetdir,$(2))/Versions/A/lib$$(FRAMEWORK).$$(if $$(filter static,$(1)),a,so)
 
-$$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__target))
+$$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__target)) dependencies
 	@echo "$(if $(filter static,$(1)),AR,LD) [$(2)] $$(subst $$(abspath $$(outdir))/,,$$@)"
 	@rm -f $$@
 	$$(hide)$$(strip $$(if $$(filter static,$(1)),\
@@ -359,9 +364,12 @@ $$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__t
 			-lobjc \
 			-o $$@ \
 		))
+
+.PHONY: install-$(1)-$(2)
+install-$(1)-$(2): $$(__target)
 	$$(hide)$$(call link,Versions/Current/$$(FRAMEWORK),$$(call targetdir,$(2))/$$(FRAMEWORK))
 	$$(hide)$$(call link,A,$$(call targetdir,$(2))/Versions/Current)
-	$$(hide)$$(if $$(filter static,$(1)),,$$(call link,$$(notdir $$@),$$(call targetdir,$(2))/Versions/A/$$(FRAMEWORK)))
+	$$(hide)$$(call link,$$(notdir $$@),$$(call targetdir,$(2))/Versions/A/$$(FRAMEWORK))
 	$$(hide)rm -Rf $$(call resdir,$(2))
 	$$(hide)mkdir -p $$(call resdir,$(2))
 	$$(hide)$$(foreach __f,$$(RESOURCES),\
@@ -376,21 +384,24 @@ all: $$(__target)
 .PHONY: $(1)-$(2)
 $(1)-$(2): $$(__target)
 
+.PHONY: $(1)
+$(1): $$(__target)
+
 endef
 
 # $1: type (static or shared)
 define add-type-build-rule
 .PHONY: $(1)
-$(1): gen-sources
+$(1): dependencies
 	@+$$(foreach __abi,$$(call abis),\
-		$$(MAKE) --no-print-directory -C $$(MYDIR) $(1)-$$(__abi) CRYSTAX_EVAL_RULES=yes ABI=$$(__abi) || exit 1; \
+		$$(MAKE) -C $$(MYDIR) $(1) CRYSTAX_EVAL_RULES=yes ABIS=$$(__abi) || exit 1; \
 	)
 endef
 
 define add-all-build-rule
-all: gen-sources
+all: dependencies
 	@+$$(foreach __abi,$$(call abis),\
-		$$(MAKE) --no-print-directory -C $$(MYDIR) $$(foreach __t,static shared,$$(__t)-$$(__abi)) CRYSTAX_EVAL_RULES=yes ABI=$$(__abi) || exit 1; \
+		$$(MAKE) -C $$(MYDIR) all CRYSTAX_EVAL_RULES=yes ABIS=$$(__abi) || exit 1; \
 	)
 endef
 
@@ -408,15 +419,25 @@ endef
 # $2: category
 define add-gen-header-rule
 __relsrc := $$(patsubst $$(TOPDIR)/$(2)/%,%,$(1))
-__dstdir := $$(genroot)/include/$(2)
+__dstdir := $$(call genroot)/include/$(2)
 
 gen-sources: $$(__dstdir)/$$(notdir $$(__relsrc))
 
 $$(__dstdir)/$$(notdir $$(__relsrc)): $(1) | $$(__dstdir)
-	@echo "GEN $$(patsubst $$(genroot)/include/%,%,$$@)"
+	@echo "GEN $$(patsubst $$(call genroot)/include/%,%,$$@)"
 	$$(hide)ln -sf $$< $$@
 
 $$(eval $$(call add-mkdir-rule,$$(__dstdir)))
+endef
+
+# $1: dependency
+define add-dependency-rule
+.PHONY: dependency-$(1)
+dependency-$(1):
+	$$(MAKE) -C $$(TOPDIR)/android/frameworks/$(1) all
+
+.PHONY: dependencies
+dependencies: dependency-$(1)
 endef
 
 #=======================================================================================
@@ -431,14 +452,15 @@ clean:
 .PHONY: gen-sources
 gen-sources:
 
-$(foreach __c,\
-    $(sort $(foreach __f,$(patsubst $(TOPDIR)/%,%,$(HEADERS)),$(firstword $(subst /, ,$(dir $(__f)))) )),\
-    $(foreach __h,$(filter $(TOPDIR)/$(__c)/%,$(HEADERS)),\
-        $(eval $(call add-gen-header-rule,$(__h),$(__c)))\
-    )\
-)
+.PHONY: dependencies
+dependencies: gen-sources
+
+.PHONY: dump-dependencies
+dump-dependencies:
+	@echo $(DEPENDENCIES)
 
 ifeq (yes,$(CRYSTAX_EVAL_RULES))
+
 $(foreach __abi,$(call abis),\
     $(foreach __t,static shared,\
         $(eval $(call add-target-rule,$(__t),$(__abi)))\
@@ -448,9 +470,25 @@ $(foreach __abi,$(call abis),\
     )\
     $(eval sinclude $(call rwildcard,$(call objdir,$(__abi)),*.d))\
 )
+
+$(foreach __c,\
+    $(sort $(foreach __f,$(patsubst $(TOPDIR)/%,%,$(HEADERS)),$(firstword $(subst /, ,$(dir $(__f)))) )),\
+    $(foreach __h,$(filter $(TOPDIR)/$(__c)/%,$(HEADERS)),\
+        $(eval $(call add-gen-header-rule,$(__h),$(__c)))\
+    )\
+)
+
 else
+
 $(eval $(call add-all-build-rule))
 $(foreach __t,static shared,\
     $(evall $(call add-type-build-rule,$(__t)))\
 )
+
+ifneq (no,$(BUILD_DEPENDENCIES))
+$(foreach __d,$(DEPENDENCIES),\
+    $(eval $(call add-dependency-rule,$(__d)))\
+)
+endif
+
 endif
