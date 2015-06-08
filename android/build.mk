@@ -52,7 +52,7 @@ $(strip \
 	-DPLATFORM_USES_BSD_SOCKETS \
 	-DCOCOTRON_DISALLOW_FORWARDING \
 	-I$(OBJC2)/include \
-	-I$(MYDIR)/include \
+	-I$(TOPDIR)/android/include \
 	-I$(genroot)/include \
 )
 endef
@@ -121,7 +121,7 @@ $(shell uname -m)
 endef
 
 define outdir
-$(or $(strip $(OUT)),$(MYDIR))
+$(if $(OUT),$(OUT)/$(FRAMEWORK),$(MYDIR)/build)
 endef
 
 define objroot
@@ -426,11 +426,7 @@ all:
 
 .PHONY: clean
 clean:
-	$(call rm-if-exists,$(strip \
-		$(targetroot) \
-		$(objroot) \
-		$(genroot) \
-	))
+	$(call rm-if-exists,$(outdir))
 
 .PHONY: gen-sources
 gen-sources:

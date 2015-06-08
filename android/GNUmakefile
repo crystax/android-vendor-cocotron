@@ -1,6 +1,8 @@
 MYDIR := $(abspath $(dir $(firstword $(MAKEFILE_LIST))))
 
-PROJECTS := $(subst $(MYDIR)/,,$(foreach __f,$(wildcard $(MYDIR)/*/GNUmakefile),$(patsubst %/,%,$(dir $(__f))) ))
+FRAMEWORKS := $(MYDIR)/
+
+PROJECTS := $(subst $(FRAMEWORKS)/,,$(foreach __f,$(wildcard $(FRAMEWORKS)/*/GNUmakefile),$(patsubst %/,%,$(dir $(__f))) ))
 
 .PHONY: all
 all: $(PROJECTS)
