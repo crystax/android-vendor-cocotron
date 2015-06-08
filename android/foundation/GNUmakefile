@@ -35,20 +35,11 @@ $(strip $(wildcard $(addprefix $(TOPDIR)/,\
 )))
 endef
 
-define cfnetwork-headers
-$(wildcard $(TOPDIR)/CFNetwork/*.h)
-endef
-
-define corefoundation-headers
-$(wildcard $(TOPDIR)/CoreFoundation/*.h)
-endef
-
-define coreservices-headers
-$(wildcard $(TOPDIR)/CoreServices/*.h)
-endef
-
-define foundation-headers
+define headers
 $(strip \
+	$(wildcard $(TOPDIR)/CFNetwork/*.h) \
+	$(wildcard $(TOPDIR)/CoreFoundation/*.h) \
+	$(wildcard $(TOPDIR)/CoreServices/*.h) \
 	$(foreach __dir,$(wildcard $(TOPDIR)/Foundation/NS*),\
 		$(wildcard $(__dir)/NS*.h) \
 		$(wildcard $(__dir)/CF*.h) \
@@ -383,7 +374,7 @@ endef
 # $2: ABI
 define add-target-rule
 $$(call target,$(1),$(2)): $$(call objfiles,$(2)) $$(makefiles)
-	@echo "$(if $(filter static,$(1)),AR,LD) [$(2)] $$(subst $$(abspath $$(TOPDIR))/,,$$@)"
+	@echo "$(if $(filter static,$(1)),AR,LD) [$(2)] $$(subst $$(abspath $$(outdir))/,,$$@)"
 	@mkdir -p $$(dir $$@)
 	@rm -f $$@
 	$$(hide)$$(strip $$(if $$(filter static,$(1)),\
@@ -465,17 +456,11 @@ clean:
 .PHONY: gen-sources
 gen-sources:
 
-$(foreach __h,$(cfnetwork-headers),\
-    $(eval $(call add-gen-header-rule,$(__h),CFNetwork))\
-)
-$(foreach __h,$(corefoundation-headers),\
-    $(eval $(call add-gen-header-rule,$(__h),CoreFoundation))\
-)
-$(foreach __h,$(coreservices-headers),\
-    $(eval $(call add-gen-header-rule,$(__h),CoreServices))\
-)
-$(foreach __h,$(foundation-headers),\
-    $(eval $(call add-gen-header-rule,$(__h),Foundation))\
+$(foreach __c,\
+    $(sort $(foreach __f,$(patsubst $(TOPDIR)/%,%,$(headers)),$(firstword $(subst /, ,$(dir $(__f)))) )),\
+    $(foreach __h,$(filter $(TOPDIR)/$(__c)/%,$(headers)),\
+        $(eval $(call add-gen-header-rule,$(__h),$(__c)))\
+    )\
 )
 
 ifeq (yes,$(CRYSTAX_EVAL_RULES))
