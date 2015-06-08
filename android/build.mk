@@ -30,6 +30,8 @@ CLANG_VERSION ?= 3.6
 
 ABIS ?= armeabi-v7a armeabi-v7a-hard x86 mips x86_64
 
+OBJC2 := $(NDK)/sources/objc/libobjc2
+
 # $1: ABI
 define commonflags
 $(strip \
@@ -49,7 +51,7 @@ $(strip \
 	-DPLATFORM_IS_POSIX \
 	-DPLATFORM_USES_BSD_SOCKETS \
 	-DCOCOTRON_DISALLOW_FORWARDING \
-	-I$(NDK)/sources/objc/libobjc2/include \
+	-I$(OBJC2)/include \
 	-I$(MYDIR)/include \
 	-I$(genroot)/include \
 )
@@ -351,7 +353,7 @@ $$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__t
 			--sysroot=$$(call sysroot,$(2)) \
 			-L$$(call sysroot,$(2))/usr/$(if $(filter x86_64,$(2)),lib64,lib) \
 			-L$$(NDK)/sources/crystax/libs/$(2) \
-			-L$$(NDK)/sources/objc/libobjc2/libs/$(2) \
+			-L$$(OBJC2)/libs/$(2) \
 			$$(call objfiles,$(2)) \
 			$$(call ldflags,$(2)) \
 			-lobjc \
