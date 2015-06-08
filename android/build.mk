@@ -24,6 +24,8 @@ ifeq (,$(strip $(MYDIR)))
 $(error MYDIR is not defined!)
 endif
 
+FRAMEWORK ?= $(notdir $(MYDIR))
+
 CLANG_VERSION ?= 3.6
 
 ABIS ?= armeabi-v7a armeabi-v7a-hard x86 x86_64
@@ -140,14 +142,6 @@ $(strip $(if $(strip $(1)),\
 ))
 endef
 
-# $1: ABI
-define targetdir
-$(strip $(if $(strip $(1)),\
-    $(targetroot)/$(strip $(1))/Foundation.framework,\
-    $(error Usage: call targetdir,abi)\
-))
-endef
-
 # $1: source file
 define objfile
 $(addsuffix .o,$(subst $(abspath $(TOPDIR))/,,$(abspath $(1))))
@@ -160,12 +154,6 @@ $(strip \
         $(foreach __f,$(SOURCES),$(call objfile,$(__f)))\
     )\
 )
-endef
-
-# $1: type (static or shared)
-# $2: ABI
-define target
-$(call targetdir,$(2))/Versions/A/libFoundation.$(subst shared,so,$(subst static,a,$(strip $(1))))
 endef
 
 # $1: ABI
@@ -347,12 +335,13 @@ endef
 # $1: type (static or shared)
 # $2: ABI
 define add-target-rule
-__target := $$(call target,$(1),$(2))
-__dstdir := $$(dir $$(__target))
+targetdir = $$(targetroot)/$$(1)/$$(FRAMEWORK).framework
+resdir = $$(call targetdir,$$(1))/Resources
 
-$$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(__dstdir)
+__target := $$(call targetdir,$(2))/Versions/A/lib$$(FRAMEWORK).$$(if $$(filter static,$(1)),a,so)
+
+$$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__target))
 	@echo "$(if $(filter static,$(1)),AR,LD) [$(2)] $$(subst $$(abspath $$(outdir))/,,$$@)"
-	@mkdir -p $$(dir $$@)
 	@rm -f $$@
 	$$(hide)$$(strip $$(if $$(filter static,$(1)),\
 		$$(call ar,$(2)) crs $$@ $$(filter-out $$(makefiles),$$^),\
@@ -368,16 +357,16 @@ $$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(__dstdir)
 			-lobjc \
 			-o $$@ \
 		))
-	$$(hide)$$(call link,Versions/Current/Foundation,$$(call targetdir,$(2))/Foundation)
+	$$(hide)$$(call link,Versions/Current/$$(FRAMEWORK),$$(call targetdir,$(2))/$$(FRAMEWORK))
 	$$(hide)$$(call link,A,$$(call targetdir,$(2))/Versions/Current)
-	$$(hide)$$(if $$(filter static,$(1)),,$$(call link,$$(notdir $$@),$$(call targetdir,$(2))/Versions/A/Foundation))
-	$$(hide)rm -Rf $$(call targetdir,$(2))/Resources
-	$$(hide)mkdir -p $$(call targetdir,$(2))/Resources
+	$$(hide)$$(if $$(filter static,$(1)),,$$(call link,$$(notdir $$@),$$(call targetdir,$(2))/Versions/A/$$(FRAMEWORK)))
+	$$(hide)rm -Rf $$(call resdir,$(2))
+	$$(hide)mkdir -p $$(call resdir,$(2))
 	$$(hide)$$(foreach __f,$$(RESOURCES),\
-			cp $$(__f) $$(call targetdir,$(2))/Resources/ || exit 1; \
+			cp $$(__f) $$(call resdir,$(2))/ || exit 1; \
 		)
 
-$$(eval $$(call add-mkdir-rule,$$(__dstdir)))
+$$(eval $$(call add-mkdir-rule,$$(dir $$(__target))))
 
 .PHONY: all
 all: $$(__target)
