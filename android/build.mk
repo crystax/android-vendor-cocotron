@@ -354,7 +354,7 @@ $$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__t
 			$(if $(filter armeabi-v7a-hard,$(2)),-Wl$(comma)--no-warn-mismatch) \
 			-Wl$(comma)--no-undefined \
 			--sysroot=$$(call sysroot,$(2)) \
-			-L$$(call sysroot,$(2))/usr/$(if $(filter x86_64,$(2)),lib64,lib) \
+			-L$$(call sysroot,$(2))/usr/$(if $(filter x86_64 mips64,$(2)),lib64,lib) \
 			-L$$(NDK)/sources/crystax/libs/$(2) \
 			-L$$(OBJC2)/libs/$(2) \
 			$$(foreach __d,$$(DEPENDENCIES),\
