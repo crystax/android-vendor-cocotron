@@ -53,7 +53,7 @@ static void init_block_class(void* nsblock,char* class)
 	init_block_class((Class) &_NSConcreteGlobalBlock,"NSBlock");
 	init_block_class((Class) &_NSConcreteWeakBlockVariable,"NSBlock");
 	//TODO support objective-c gc
-	[^(){printf("cocotron blocks runtime selftest\n");} invoke];
+	//[^(){printf("cocotron blocks runtime selftest\n");} invoke];
 }
 @end
 

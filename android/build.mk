@@ -352,12 +352,19 @@ $$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__t
 		$$(call cc,$(2)) \
 			-shared -Wl,-soname,$$(notdir $$@) \
 			$(if $(filter armeabi-v7a-hard,$(2)),-Wl$(comma)--no-warn-mismatch) \
+			-Wl$(comma)--no-undefined \
 			--sysroot=$$(call sysroot,$(2)) \
 			-L$$(call sysroot,$(2))/usr/$(if $(filter x86_64,$(2)),lib64,lib) \
 			-L$$(NDK)/sources/crystax/libs/$(2) \
 			-L$$(OBJC2)/libs/$(2) \
+			$$(foreach __d,$$(DEPENDENCIES),\
+				-L$$(call targetroot,$$(__d))/$(2) \
+			)\
 			$$(call objfiles,$(2)) \
 			$$(call ldflags,$(2)) \
+			$$(foreach __d,$$(DEPENDENCIES),\
+				-l$$(__d) \
+			)\
 			-lobjc \
 			-o $$@ \
 		))

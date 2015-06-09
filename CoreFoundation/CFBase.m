@@ -223,8 +223,6 @@ int mkstemps(char *template,int suffixlen) {
     
     check=[NSString stringWithUTF8String:try];
     
-    NSLog(@"mkstemps try=%@",check);
-    
     result=CreateFileW([check fileSystemRepresentationW],GENERIC_WRITE|GENERIC_READ,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
     
     failSafe++;
