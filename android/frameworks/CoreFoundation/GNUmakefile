@@ -2,7 +2,7 @@ MYDIR := $(abspath $(dir $(firstword $(MAKEFILE_LIST))))
 TOPDIR := $(abspath $(MYDIR)/../../..)
 
 SOURCES := $(strip $(wildcard $(addprefix $(TOPDIR)/,\
-	CFNetwork/CFSocketStream.m \
+	CFNetwork/CF*.m \
 	CoreFoundation/CF*.m \
 	Foundation/NS**/CF*.m \
 	Foundation/NS**/NS*.m \
