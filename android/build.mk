@@ -22,7 +22,10 @@ endif
 
 FRAMEWORK ?= $(notdir $(MYDIR))
 
-OBJC2 := $(NDK)/sources/objc/libobjc2
+DEVDEFAULTS = $(NDK)/build/tools/dev-defaults.sh
+
+OBJC2 := $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$GNUSTEP_OBJC2_SUBDIR)
+PREFIX ?= $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$COCOTRON_SUBDIR)/$(lastword $(shell source $(DEVDEFAULTS) && echo $$COCOTRON_VERSIONS))/frameworks
 
 include $(TOPDIR)/android/defaults.mk
 
@@ -372,7 +375,6 @@ $$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__t
 ifneq (static,$(1))
 .PHONY: install-$(2)
 install-$(2): $$(__target)
-	$$(if $$(strip $$(PREFIX)),,$$(error PREFIX is not defined!))
 	$$(eval __installdir := $$(PREFIX)/$(2)/$$(FRAMEWORK).framework)
 	@echo "INSTALL $$(__installdir)"
 	$$(hide)mkdir -p $$(__installdir)/Versions/A
