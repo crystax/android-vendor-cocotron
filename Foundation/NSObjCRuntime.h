@@ -145,14 +145,14 @@ typedef NSInteger NSComparisonResult;
 
 #ifndef NS_ENUM
 #define NS_ENUM(_type, _name) \
-    _type _name;              \
-    enum
+    enum _name : _type _name; \
+    enum _name : _type
 #endif
 
 #ifndef NS_OPTIONS
 #define NS_OPTIONS(_type, _name) \
-    _type _name;                 \
-    enum
+    enum _name : _type _name;    \
+    enum _name : _type
 #endif
 
 FOUNDATION_EXPORT void NSLog(NSString *format, ...);
