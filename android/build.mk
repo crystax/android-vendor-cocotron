@@ -25,7 +25,7 @@ FRAMEWORK ?= $(notdir $(MYDIR))
 DEVDEFAULTS = $(NDK)/build/tools/dev-defaults.sh
 
 OBJC2 := $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$GNUSTEP_OBJC2_SUBDIR)
-PREFIX ?= $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$COCOTRON_SUBDIR)/$(lastword $(shell source $(DEVDEFAULTS) && echo $$COCOTRON_VERSIONS))/frameworks
+PREFIX ?= $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$COCOTRON_SUBDIR)/frameworks
 
 include $(TOPDIR)/android/defaults.mk
 
