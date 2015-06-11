@@ -393,6 +393,7 @@ install-$(2): $$(__target)
 	$$(hide)$$(foreach __f,$$(RESOURCES),\
 			cp $$(__f) $$(__resdir)/ || exit 1; \
 		)
+	$$(hide)echo "LOCAL_EXPORT_CFLAGS += $$(foreach __d,$$(DEPENDENCIES),-framework $$(__d))" >$$(__installdir)/deps.mk
 
 .PHONY: install
 install: install-$(2)
