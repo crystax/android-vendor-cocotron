@@ -16,7 +16,7 @@ SOURCES := $(strip $(wildcard $(addprefix $(TOPDIR)/,\
 	Foundation/xml/NS*.m \
 	objc/dyld.c \
 	objc/objc_arc.c \
-	objc/objc_exception.c \
+	objc/objc_exception.m \
 	objc/objc_tls.c \
 )))
 
