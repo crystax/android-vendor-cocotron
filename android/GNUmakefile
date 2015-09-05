@@ -1,7 +1,5 @@
 MYDIR := $(abspath $(dir $(firstword $(MAKEFILE_LIST))))
 
-include $(MYDIR)/defaults.mk
-
 FRAMEWORKS := $(MYDIR)/frameworks
 
 PROJECTS := $(subst $(FRAMEWORKS)/,,$(foreach __f,$(wildcard $(FRAMEWORKS)/*/GNUmakefile),$(patsubst %/,%,$(dir $(__f))) ))

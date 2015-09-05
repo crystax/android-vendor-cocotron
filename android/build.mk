@@ -25,9 +25,12 @@ FRAMEWORK ?= $(notdir $(MYDIR))
 DEVDEFAULTS = $(NDK)/build/tools/dev-defaults.sh
 
 OBJC2 := $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$GNUSTEP_OBJC2_SUBDIR)
-PREFIX ?= $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$COCOTRON_SUBDIR)/frameworks
 
-include $(TOPDIR)/android/defaults.mk
+LLVM_VERSION ?= $(shell source $(DEVDEFAULTS) && echo $$DEFAULT_LLVM_VERSION)
+GCC_VERSION  ?= $(shell source $(DEVDEFAULTS) && echo $$DEFAULT_GCC_VERSION)
+
+PREFIX ?= $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$COCOTRON_SUBDIR)/frameworks
+ABIS ?= $(shell source $(DEVDEFAULTS) && echo $$PREBUILT_ABIS)
 
 # $1: ABI
 define commonflags
@@ -222,10 +225,10 @@ endef
 define tc-bin
 $(strip $(if $(and $(strip $(1)),$(strip $(2))),\
     $(strip \
-        $(abspath $(NDK))/toolchains/llvm-$(CLANG_VERSION)/prebuilt/$(host-os)-$(host-arch)/bin/$(strip $(2))\
+        $(abspath $(NDK))/toolchains/llvm-$(LLVM_VERSION)/prebuilt/$(host-os)-$(host-arch)/bin/$(strip $(2))\
         $(if $(filter clang clang++,$(2)),\
             -target $(call llvm-tripple,$(1))\
-            -gcc-toolchain $(call gcc-toolchain,$(1),4.9)\
+            -gcc-toolchain $(call gcc-toolchain,$(1),$(GCC_VERSION))\
         )\
     ),\
     $(error Usage: call tc-bin,abi,name)\
