@@ -44,6 +44,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <sys/socket.h>
 #include <errno.h>
 
+#if defined(__ANDROID__)
+#include <android/log.h>
+#endif
+
 BOOL NSCurrentLocaleIsMetric(){
    return NO;
 }
@@ -242,6 +246,9 @@ NSUInteger NSPlatformThreadID() {
 
 void NSPlatformLogString(NSString *string) {
     fprintf(stderr, "%s\n", [string UTF8String]);
+#if __ANDROID__
+    __android_log_write(ANDROID_LOG_INFO, "NSLog", [string UTF8String]);
+#endif
 }
 
 void *NSPlatformContentsOfFile(NSString *path,NSUInteger *lengthp) {
