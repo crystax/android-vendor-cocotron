@@ -33,9 +33,13 @@ PREFIX ?= $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$COCOTRON_SUBDIR)/framew
 ABIS ?= $(shell source $(DEVDEFAULTS) && echo $$PREBUILT_ABIS)
 
 # $1: ABI
+# $2: source file
 define commonflags
 $(strip \
+	-fgnu-runtime \
+	-fobjc-nonfragile-abi \
 	-fblocks \
+	-fno-objc-arc \
 	-fintegrated-as \
 	-fpic \
 	-O2 -g \
@@ -264,18 +268,21 @@ $(strip $(if $(and $(strip $(1)),$(strip $(2))),\
 endef
 
 # $1: ABI
+# $2: source file
 define cflags
-$(call commonflags,$(1))
+$(call commonflags,$(1),$(2))
 endef
 
 # $1: ABI
+# $2: source file
 define c++flags
-$(call commonflags,$(1))
+$(call commonflags,$(1),$(2))
 endef
 
 # $1: ABI
+# $2: source file
 define asmflags
-$(call commonflags,$(1))
+$(call commonflags,$(1),$(2))
 endef
 
 # $1: ABI
@@ -283,9 +290,9 @@ endef
 define compiler-flags
 $(strip $(if $(and $(strip $(1)),$(strip $(2))),\
     $(or \
-        $(if $(filter %.c %.m,$(2)),$(call cflags,$(1))),\
-        $(if $(filter %.cpp %.cc %.mm,$(2)),$(call c++flags,$(1))),\
-        $(if $(filter %.s %.S,$(2)),$(call asmflags,$(1))),\
+        $(if $(filter %.c %.m,$(2)),$(call cflags,$(1),$(2))),\
+        $(if $(filter %.cpp %.cc %.mm,$(2)),$(call c++flags,$(1),$(2))),\
+        $(if $(filter %.s %.S,$(2)),$(call asmflags,$(1),$(2))),\
         $(error Cannot detect compiler flags for '$(2)')\
     ),\
     $(error Usage: call compiler-for,abi,source-file)\

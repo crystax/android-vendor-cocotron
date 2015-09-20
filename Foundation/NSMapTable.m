@@ -267,8 +267,8 @@ BOOL NSNextMapEnumeratorPair(NSMapEnumerator *state,void **key,
    if((state->j=state->j->next)!=NULL)
     return YES;
 
-   for(state->i++;state->i<state->table->nBuckets;state->i++)
-    if((state->j=state->table->buckets[state->i])!=NULL)
+   for(state->i++;state->i<((NSMapTable*)(state->table))->nBuckets;state->i++)
+    if((state->j=((NSMapTable*)(state->table))->buckets[state->i])!=NULL)
      return YES;
 
    state->j=NULL;

@@ -55,6 +55,26 @@ THE SOFTWARE IS PROVIDED "AS IS",WITHOUT WARRANTY OF ANY KIND,EXPRESS OR IMPLIED
 
 #endif // __cplusplus
 
+#if !defined(CF_INLINE)
+#define CF_INLINE static __inline__ __attribute__((always_inline))
+#endif
+
+#if !defined(CF_RETURNS_RETAINED)
+#if __has_feature(attribute_cf_returns_retained)
+#define CF_RETURNS_RETAINED __attribute__((cf_returns_retained))
+#else
+#define CF_RETURNS_RETAINED
+#endif
+#endif
+
+#if !defined(CF_CONSUMED)
+#if __has_feature(attribute_cf_consumed)
+#define CF_CONSUMED __attribute__((cf_consumed))
+#else
+#define CF_CONSUMED
+#endif
+#endif
+
 /* Apple's Foundation imports CoreGraphics in order to get some of the basic CG* types, unfortunately
    this is a hassle on platforms where you just want to use Foundation, so we put them in CoreFoundation and see what happens
 */
@@ -89,6 +109,31 @@ typedef struct CGRect {
     CGPoint origin;
     CGSize size;
 } CGRect;
+
+COREFOUNDATION_EXPORT const CGPoint CGPointZero;
+COREFOUNDATION_EXPORT const CGSize CGSizeZero;
+COREFOUNDATION_EXPORT const CGRect CGRectZero;
+
+CF_INLINE CGPoint CGPointMake(CGFloat x, CGFloat y)
+{
+    CGPoint val = {.x = x, .y = y};
+    return val;
+}
+
+CF_INLINE CGSize CGSizeMake(CGFloat width, CGFloat height)
+{
+    CGSize val = {.width = width, .height = height};
+    return val;
+}
+
+CF_INLINE CGRect CGRectMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height)
+{
+    CGRect val = {
+        .origin = {.x = x, .y = y},
+        .size = {.width = width, .height = height}
+    };
+    return val;
+}
 
 typedef unsigned short UniChar;
 typedef unsigned long UTF32Char;
@@ -211,6 +256,30 @@ COREFOUNDATION_EXPORT Boolean CFEqual(CFTypeRef self, CFTypeRef other);
 COREFOUNDATION_EXPORT CFStringRef CFCopyTypeIDDescription(CFTypeID typeID);
 COREFOUNDATION_EXPORT CFStringRef CFCopyDescription(CFTypeRef self);
 COREFOUNDATION_EXPORT CFTypeRef CFMakeCollectable(CFTypeRef self);
+
+#if __has_feature(objc_arc)
+CF_INLINE CF_RETURNS_RETAINED CFTypeRef CFBridgingRetain(id X) {
+    return (__bridge_retained CFTypeRef)X;
+}
+
+CF_INLINE id CFBridgingRelease(CFTypeRef CF_CONSUMED X) {
+    return (__bridge_transfer id)X;
+}
+
+#else
+
+CF_INLINE CF_RETURNS_RETAINED CFTypeRef CFBridgingRetain(id X) {
+    return X ? CFRetain((CFTypeRef)X) : NULL;
+}
+
+CF_INLINE id CFBridgingRelease(CFTypeRef CF_CONSUMED X) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-method-access"
+    return [(id)CFMakeCollectable(X) autorelease];
+#pragma clang diagnostic pop
+}
+
+#endif
 
 #ifndef MACH
 

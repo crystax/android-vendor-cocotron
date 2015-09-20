@@ -53,7 +53,7 @@ FOUNDATION_EXPORT void NSSetUncaughtExceptionHandler(NSUncaughtExceptionHandler 
 typedef struct NSExceptionFrame {
     jmp_buf state;
     struct NSExceptionFrame *parent;
-    NSException *exception;
+    void *exception;
 } NSExceptionFrame;
 
 FOUNDATION_EXPORT void __NSPushExceptionFrame(NSExceptionFrame *frame);
@@ -69,7 +69,7 @@ FOUNDATION_EXPORT void __NSPopExceptionFrame(NSExceptionFrame *frame);
     __NSPopExceptionFrame(&__exceptionFrame);                                  \
     }                                                                          \
     else {                                                                     \
-        NSException *localException = __exceptionFrame.exception;              \
+        NSException *localException = (__bridge NSException *)__exceptionFrame.exception;              \
         if(localException) { /* caller does not have to read localException */ \
         }
 
