@@ -68,7 +68,7 @@
 
 
 
-static inline float colorFromTemp(float c,float q,float p){
+static inline O2Float colorFromTemp(O2Float c,O2Float q,O2Float p){
     if(6.0*c<1)
      c=p+(q-p)*6.0*c;
     else if(2.0*c<1)
@@ -80,11 +80,11 @@ static inline float colorFromTemp(float c,float q,float p){
     return c;
 }
 
-static inline void HSLToRGB(float hue,float saturation,float luminance,float *redp,float *greenp,float *bluep) {
-   float red=luminance,green=luminance,blue=luminance;
+static inline void HSLToRGB(O2Float hue,O2Float saturation,O2Float luminance,O2Float32 *redp,O2Float32 *greenp,O2Float32 *bluep) {
+   O2Float red=luminance,green=luminance,blue=luminance;
 
    if(saturation!=0){
-    float p,q;
+    O2Float p,q;
 
     if(luminance<0.5)
      q=luminance*(1+saturation);
@@ -112,8 +112,8 @@ static inline void HSLToRGB(float hue,float saturation,float luminance,float *re
    *bluep=blue;
 }
 
-static inline void RGBToHSL(float r,float g,float b,float *huep,float *saturationp,float *luminancep) {
-   float hue=0,saturation=0,luminance,min,max;
+static inline void RGBToHSL(O2Float r,O2Float g,O2Float b,O2Float *huep,O2Float *saturationp,O2Float *luminancep) {
+   O2Float hue=0,saturation=0,luminance,min,max;
 
    max=MAX(r,MAX(g,b));
    min=MIN(r,MIN(g,b));

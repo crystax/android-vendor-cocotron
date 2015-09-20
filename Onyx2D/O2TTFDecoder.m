@@ -595,7 +595,7 @@ NSMapTable *O2TTFDecoderGetPostScriptNameMapTable(O2TTFDecoderRef self,int *numb
      
     case 0x00020000:;
      uint16_t numberOfGlyphs=decode_uint16(self);
-     int      i;
+     uint16_t i;
      uint16_t maxIndex=0;
      uint16_t glyphNameIndex[numberOfGlyphs];
      
@@ -623,10 +623,10 @@ NSMapTable *O2TTFDecoderGetPostScriptNameMapTable(O2TTFDecoderRef self,int *numb
       uint16_t nameIndex=glyphNameIndex[i];
       
       if(nameIndex<=257)
-       NSMapInsert(result,MacintoshNameMapping[nameIndex].name,(void *)i);
+       NSMapInsert(result,MacintoshNameMapping[nameIndex].name,(void *)(uintptr_t)i);
       else {
        nameIndex-=258;
-       NSMapInsert(result,names[nameIndex],(void *)i);
+       NSMapInsert(result,names[nameIndex],(void *)(uintptr_t)i);
       } 
      }
      
@@ -747,7 +747,7 @@ void O2TTFDecoderGetNameTable(O2TTFDecoderRef self) {
     
     NSLog(@"platformID=%d,languageId=%d,nameID=%d",platformID,languageID,nameID);
     
-    NSLog(@"position=%ld,stringOffset=%d,offset=%d",self->_position,stringOffset,offset);
+    NSLog(@"position=%ld,stringOffset=%d,offset=%d",(long)self->_position,stringOffset,offset);
     
     NSString *string=[NSString stringWithCString:(const char *)self->_bytes+location length:length];
     

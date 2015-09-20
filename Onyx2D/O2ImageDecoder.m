@@ -66,7 +66,7 @@ O2BitmapInfo O2ImageDecoderGetBitmapInfo(O2ImageDecoderRef self) {
 }
 
 -(CFDataRef)createPixelData {
-    return nil;
+    return NULL;
 }
 
 CFDataRef O2ImageDecoderCreatePixelData(O2ImageDecoderRef self) {

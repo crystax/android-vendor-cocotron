@@ -6,11 +6,6 @@
 #import <Onyx2D/O2PDFStream.h>
 #import <Onyx2D/O2PDFContext.h>
 
-#ifdef __APPLE__
-#else
-#import "O2Defines_zlib.h"
-#endif
-
 #if ZLIB_PRESENT
 #import <zlib-1.2.5/include/zlib.h>
 #endif
@@ -202,7 +197,7 @@ const char *O2ImageNameWithIntent(O2ColorRenderingIntent intent){
    O2ColorSpaceRef colorSpace=NULL;
     int               componentsPerPixel;
    O2PDFArray     *decodeArray;
-   float            *decode=NULL;
+   O2Float            *decode=NULL;
    BOOL              interpolate;
    O2PDFStream *softMaskStream=nil;
    O2Image *softMask=NULL;

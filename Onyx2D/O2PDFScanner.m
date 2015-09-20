@@ -1148,7 +1148,7 @@ NSData *O2PDFScannerCreateDataWithLength(O2PDFScanner *self,size_t length) {
    _position=0;
    
    if(O2PDFScannerDumpStream)
-    NSLog(@"data[%d]=%@",[data length],[[[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding] autorelease]);
+    NSLog(@"data[%tu]=%@",[data length],[[[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding] autorelease]);
    
    while(_position<length) {
     O2PDFObject *object;

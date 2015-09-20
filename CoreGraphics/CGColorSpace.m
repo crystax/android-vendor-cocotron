@@ -10,33 +10,33 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <Onyx2D/O2ColorSpace.h>
 
 CGColorSpaceRef CGColorSpaceRetain(CGColorSpaceRef colorSpace) {
-   return O2ColorSpaceRetain(colorSpace);
+   return (CGColorSpaceRef)O2ColorSpaceRetain((O2ColorSpaceRef)colorSpace);
 }
 
 void CGColorSpaceRelease(CGColorSpaceRef colorSpace) {
-   O2ColorSpaceRelease(colorSpace);
+   O2ColorSpaceRelease((O2ColorSpaceRef)colorSpace);
 }
 
 CGColorSpaceRef CGColorSpaceCreateDeviceRGB() {
-   return O2ColorSpaceCreateDeviceRGB();
+   return (CGColorSpaceRef)O2ColorSpaceCreateDeviceRGB();
 }
 
 CGColorSpaceRef CGColorSpaceCreateDeviceGray() {
-   return O2ColorSpaceCreateDeviceGray();
+   return (CGColorSpaceRef)O2ColorSpaceCreateDeviceGray();
 }
 
 CGColorSpaceRef CGColorSpaceCreateDeviceCMYK() {
-   return O2ColorSpaceCreateDeviceCMYK();
+   return (CGColorSpaceRef)O2ColorSpaceCreateDeviceCMYK();
 }
 
 CGColorSpaceRef CGColorSpaceCreatePattern(CGColorSpaceRef baseSpace) {
-   return O2ColorSpaceCreatePattern(baseSpace);
+   return (CGColorSpaceRef)O2ColorSpaceCreatePattern((O2ColorSpaceRef)baseSpace);
 }
 
 CGColorSpaceModel CGColorSpaceGetModel(CGColorSpaceRef self) {
-   return O2ColorSpaceGetModel(self);
+   return (CGColorSpaceModel)O2ColorSpaceGetModel((O2ColorSpaceRef)self);
 }
 
 size_t CGColorSpaceGetNumberOfComponents(CGColorSpaceRef self) {
-   return O2ColorSpaceGetNumberOfComponents(self);
+   return O2ColorSpaceGetNumberOfComponents((O2ColorSpaceRef)self);
 }

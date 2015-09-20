@@ -1,7 +1,12 @@
 #import <CoreGraphics/CGLPixelSurface.h>
 #import <CoreGraphics/CGWindow.h>
 #import <Onyx2D/O2Image.h>
+#ifdef WINDOWS
 #import <AppKit/O2Surface_DIBSection.h>
+#elif __ANDROID__
+#import <Onyx2D/O2Surface_Android.h>
+#endif
+#import <Foundation/NSRaise.h>
 
 @implementation CGLPixelSurface
 
@@ -59,7 +64,13 @@
    _bufferObjects=malloc(_numberOfBuffers*sizeof(GLuint));
    _readPixels=malloc(_numberOfBuffers*sizeof(void *));
    _staticPixels=malloc(_numberOfBuffers*sizeof(void *));
+#ifdef WINDOWS
    _surface=[[O2Surface_DIBSection alloc] initWithWidth:_width height:-_height compatibleWithDeviceContext:nil];
+#elif __ANDROID__
+   _surface = [[O2Surface_Android alloc] initWithWidth:_width height:-_height];
+#else
+#error "Don't know how to create surface for this platform"
+#endif
    
    for(i=0;i<_numberOfBuffers;i++){
     _bufferObjects[i]=0;
@@ -79,16 +90,22 @@
     }
     else {
      _readPixels[i]=NULL;
+#if __ANDROID__
+     NSUnimplementedMethod();
+#else
      CGLBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, _bufferObjects[i]);
      CGLBufferData(GL_PIXEL_PACK_BUFFER_ARB, _width*_rowsPerBuffer*4, NULL,GL_STREAM_READ);
      CGLBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
+#endif
     }
     
     row+=_rowsPerBuffer;
    }
 }
 
-//#define RGBA_NOT_BGRA 1
+#if __ANDROID__
+#define RGBA_NOT_BGRA 1
+#endif
 
 #ifdef RGBA_NOT_BGRA
 #define PIXEL_FORMAT GL_RGBA
@@ -165,7 +182,11 @@ static inline uint32_t premultiplyPixel(uint32_t value){
     if(_bufferObjects[i]==0)
      glReadPixels(0,row,_width,rowCount,PIXEL_FORMAT, GL_UNSIGNED_BYTE,_readPixels[i]);
     else {
+#if __ANDROID__
+     NSUnimplementedMethod();
+#else
      CGLBindBuffer(GL_PIXEL_PACK_BUFFER,_bufferObjects[i]);
+#endif
      unbind=YES;
      
      glReadPixels(0,row,_width,rowCount,PIXEL_FORMAT, GL_UNSIGNED_BYTE, 0);
@@ -178,8 +199,13 @@ static inline uint32_t premultiplyPixel(uint32_t value){
     row+=rowCount;
    }
    
-   if(unbind)
-    CGLBindBuffer(GL_PIXEL_PACK_BUFFER,0);          
+   if(unbind) {
+#if __ANDROID__
+    NSUnimplementedMethod();
+#else
+    CGLBindBuffer(GL_PIXEL_PACK_BUFFER,0);
+#endif
+   }
 
    row=0;
    unbind=NO;
@@ -193,8 +219,12 @@ static inline uint32_t premultiplyPixel(uint32_t value){
      inputRow=_readPixels[i];
     else {
      unbind=YES;
+#if __ANDROID__
+     NSUnimplementedMethod();
+#else
      CGLBindBuffer(GL_PIXEL_PACK_BUFFER,_bufferObjects[i]);          
      inputRow=(GLubyte*)CGLMapBuffer(GL_PIXEL_PACK_BUFFER,GL_READ_ONLY);
+#endif
     }
     
     if(_isOpaque){
@@ -231,14 +261,23 @@ static inline uint32_t premultiplyPixel(uint32_t value){
     }
     
     if(_bufferObjects[i]!=0){
+#if __ANDROID__
+     NSUnimplementedMethod();
+#else
      CGLUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+#endif
     }
     
     row+=rowCount;
    }
    
-   if(unbind)
+   if(unbind) {
+#if __ANDROID__
+    NSUnimplementedMethod();
+#else
     CGLBindBuffer(GL_PIXEL_PACK_BUFFER,0);          
+#endif
+   }
       
 #if 0    
    if(_usePixelBuffer){

@@ -18,7 +18,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 
 +pdfObjectWithInteger:(O2PDFInteger)value {
-   return [[[self alloc] initWithInteger:value] autorelease];
+   return [[[O2PDFObject_Integer alloc] initWithInteger:value] autorelease];
 }
 
 -(O2PDFObjectType)objectType {

@@ -10,73 +10,73 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <Onyx2D/O2Font.h>
 
 CGFontRef CGFontCreateWithFontName(CFStringRef name) {
-   return O2FontCreateWithFontName((NSString *)name);
+   return (CGFontRef)O2FontCreateWithFontName((NSString *)name);
 }
 
 CGFontRef CGFontRetain(CGFontRef self) {
-   return O2FontRetain(self);
+   return (CGFontRef)O2FontRetain((O2FontRef)self);
 }
 
 void      CGFontRelease(CGFontRef self) {
-   O2FontRelease(self);
+   O2FontRelease((O2FontRef)self);
 }
 
 CFStringRef CGFontCopyFullName(CGFontRef self) {
-   return (CFStringRef)O2FontCopyFullName(self);
+   return (CFStringRef)O2FontCopyFullName((O2FontRef)self);
 }
 
 int       CGFontGetUnitsPerEm(CGFontRef self) {
-   return O2FontGetUnitsPerEm(self);
+   return O2FontGetUnitsPerEm((O2FontRef)self);
 }
 
 int       CGFontGetAscent(CGFontRef self) {
-   return O2FontGetAscent(self);
+   return O2FontGetAscent((O2FontRef)self);
 }
 
 int       CGFontGetDescent(CGFontRef self) {
-   return O2FontGetDescent(self);
+   return O2FontGetDescent((O2FontRef)self);
 }
 
 int       CGFontGetLeading(CGFontRef self) {
-   return O2FontGetLeading(self);
+   return O2FontGetLeading((O2FontRef)self);
 }
 
 int       CGFontGetCapHeight(CGFontRef self) {
-   return O2FontGetCapHeight(self);
+   return O2FontGetCapHeight((O2FontRef)self);
 }
 
 int       CGFontGetXHeight(CGFontRef self) {
-   return O2FontGetXHeight(self);
+   return O2FontGetXHeight((O2FontRef)self);
 }
 
 CGFloat   CGFontGetItalicAngle(CGFontRef self) {
-   return O2FontGetItalicAngle(self);
+   return O2FontGetItalicAngle((O2FontRef)self);
 }
 
 CGFloat   CGFontGetStemV(CGFontRef self) {
-   return O2FontGetStemV(self);
+   return O2FontGetStemV((O2FontRef)self);
 }
 
 CGRect    CGFontGetFontBBox(CGFontRef self) {
-   return O2FontGetFontBBox(self);
+   return O2FontGetFontBBox((O2FontRef)self);
 }
 
 size_t    CGFontGetNumberOfGlyphs(CGFontRef self) {
-   return O2FontGetNumberOfGlyphs(self);
+   return O2FontGetNumberOfGlyphs((O2FontRef)self);
 }
 
 bool      CGFontGetGlyphAdvances(CGFontRef self,const CGGlyph *glyphs,size_t count,int *advances) {
-   return O2FontGetGlyphAdvances(self,glyphs,count,advances);
+   return O2FontGetGlyphAdvances((O2FontRef)self,glyphs,count,advances);
 }
 
 CGGlyph   CGFontGetGlyphWithGlyphName(CGFontRef self,CFStringRef name) {
-   return O2FontGetGlyphWithGlyphName(self,name);
+   return O2FontGetGlyphWithGlyphName((O2FontRef)self,name);
 }
 
 CFStringRef CGFontCopyGlyphNameForGlyph(CGFontRef self,CGGlyph glyph) {
-   return (CFStringRef)O2FontCopyGlyphNameForGlyph(self,glyph);
+   return (CFStringRef)O2FontCopyGlyphNameForGlyph((O2FontRef)self,glyph);
 }
 
 CFDataRef CGFontCopyTableForTag(CGFontRef self,uint32_t tag) {
-   return (CFDataRef)O2FontCopyTableForTag(self,tag);
+   return (CFDataRef)O2FontCopyTableForTag((O2FontRef)self,tag);
 }

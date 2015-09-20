@@ -15,10 +15,6 @@ const CFAllocatorRef kCFAllocatorMallocZone;
 const CFAllocatorRef kCFAllocatorNull;
 const CFAllocatorRef kCFAllocatorUseContext;
 
-const CGPoint CGPointZero = {.x = 0, .y = 0};
-const CGSize  CGSizeZero  = {.width = 0, .height = 0};
-const CGRect  CGRectZero  = {.origin = {.x = 0, .y = 0}, .size = {.width = 0, .height = 0}};
-
 CFAllocatorRef CFAllocatorGetDefault(void){
    NSUnimplementedFunction();
    return 0;

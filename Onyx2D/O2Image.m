@@ -346,7 +346,7 @@ renderingIntent:(O2ColorRenderingIntent)renderingIntent {
    return nil;
 }
 
--initMaskWithWidth:(size_t)width height:(size_t)height bitsPerComponent:(size_t)bitsPerComponent bitsPerPixel:(size_t)bitsPerPixel bytesPerRow:(size_t)bytesPerRow provider:(O2DataProvider *)provider decode:(const float *)decode interpolate:(BOOL)interpolate {
+-initMaskWithWidth:(size_t)width height:(size_t)height bitsPerComponent:(size_t)bitsPerComponent bitsPerPixel:(size_t)bitsPerPixel bytesPerRow:(size_t)bytesPerRow provider:(O2DataProvider *)provider decode:(const O2Float *)decode interpolate:(BOOL)interpolate {
    O2ColorSpaceRef gray=O2ColorSpaceCreateDeviceGray();
    
     if((self=[self initWithWidth:width height:height bitsPerComponent:bitsPerComponent bitsPerPixel:bitsPerPixel bytesPerRow:bytesPerRow colorSpace:gray bitmapInfo:kO2ImageAlphaNone decoder:NULL provider:provider decode:decode interpolate:interpolate renderingIntent:kO2RenderingIntentDefault])==nil){
@@ -640,10 +640,10 @@ O2argb32f *O2ImageRead_ANY_to_argb8u_to_argb32f(O2Image *self,int x,int y,O2argb
    return NULL;
 }
 
-float bytesLittleToFloat(const unsigned char *scanline){
+O2Float bytesLittleToFloat(const unsigned char *scanline){
    union {
     unsigned char bytes[4];
-    float         f;
+    O2Float         f;
    } u;
 
 #ifdef __LITTLE_ENDIAN__   
@@ -686,10 +686,10 @@ O2argb32f *O2ImageRead_argb32fLittle_to_argb32f(O2Image *self,int x,int y,O2argb
    return NULL;
 }
 
-float bytesBigToFloat(const unsigned char *scanline){
+O2Float bytesBigToFloat(const unsigned char *scanline){
    union {
     unsigned char bytes[4];
-    float         f;
+    O2Float         f;
    } u;
 
 #ifdef __BIG_ENDIAN__   
@@ -1219,14 +1219,14 @@ void O2ImageBicubic_largb8u_PRE(O2Image *self,int x, int y,O2argb8u *span,int le
    }
 }
 
-ONYX2D_STATIC_INLINE float cubic_f(float v0,float v1,float v2,float v3,float fraction){
-  float p = (v3 - v2) - (v0 - v1);
-  float q = (v0 - v1) - p;
+ONYX2D_STATIC_INLINE O2Float cubic_f(O2Float v0,O2Float v1,O2Float v2,O2Float v3,O2Float fraction){
+  O2Float p = (v3 - v2) - (v0 - v1);
+  O2Float q = (v0 - v1) - p;
 
   return RI_CLAMP((p * (fraction*fraction*fraction)) + (q * fraction*fraction) + ((v2 - v0) * fraction) + v1,0,1);
 }
 
-O2argb32f bicubic_largb32f_PRE(O2argb32f a,O2argb32f b,O2argb32f c,O2argb32f d,float fraction) {
+O2argb32f bicubic_largb32f_PRE(O2argb32f a,O2argb32f b,O2argb32f c,O2argb32f d,O2Float fraction) {
   return O2argb32fInit(
    cubic_f(a.r, b.r, c.r, d.r, fraction),
    cubic_f(a.g, b.g, c.g, d.g, fraction),
@@ -1245,10 +1245,10 @@ void O2ImageBicubic_largb32f_PRE(O2Image *self,int x, int y,O2argb32f *span,int 
     uv.x -= 0.5f;
     uv.y -= 0.5f;
     int u = RI_FLOOR_TO_INT(uv.x);
-    float ufrac=uv.x-u;
+    O2Float ufrac=uv.x-u;
         
     int v = RI_FLOOR_TO_INT(uv.y);
-    float vfrac=uv.y-v;
+    O2Float vfrac=uv.y-v;
         
     O2argb32f t0,t1,t2,t3;
     O2argb32f cspan[4];
@@ -1282,7 +1282,7 @@ void O2ImageBilinear_largb8u_PRE(O2Image *self,int x, int y,O2argb8u *span,int l
    du-=0.5;
    dv-=0.5;
 
-// Coordinates are pre-scaled by 256 to avoid float multiplication and
+// Coordinates are pre-scaled by 256 to avoid O2Float multiplication and
 // subtraction inside the loop for generating the coverage amount.
 
    du*=COVERAGE_MULTIPLIER_FLOAT;
@@ -1376,7 +1376,7 @@ void O2ImagePointSampling_largb32f_PRE(O2Image *self,int x, int y,O2argb32f *spa
    }
 }
 
-// Float translate, or float translate with flip
+// Float translate, or O2Float translate with flip
 void O2ImageBilinearFloatTranslate_largb8u_PRE(O2Image *self,int x, int y,O2argb8u *span,int length, O2AffineTransform surfaceToImage){
    double du=(x+0.5) * surfaceToImage.a+(y+0.5)* surfaceToImage.c+surfaceToImage.tx;
    double dv=(x+0.5) * surfaceToImage.b+(y+0.5)* surfaceToImage.d+surfaceToImage.ty;

@@ -9,18 +9,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <Onyx2D/O2DataConsumer.h>
  
 CGDataConsumerRef CGDataConsumerCreate(void *info, const CGDataConsumerCallbacks *callbacks) {
-	return O2DataConsumerCreate(info, (const O2DataConsumerCallbacks *)callbacks);
+	return (CGDataConsumerRef)O2DataConsumerCreate(info, (const O2DataConsumerCallbacks *)callbacks);
 }
 
 CGDataConsumerRef CGDataConsumerCreateWithURL(CFURLRef url) {
-	return O2DataConsumerCreateWithURL(url);
+	return (CGDataConsumerRef)O2DataConsumerCreateWithURL(url);
 }
 
 CGDataConsumerRef CGDataConsumerCreateWithCFData(CFMutableDataRef data) {
-   return O2DataConsumerCreateWithCFData(data);
+   return (CGDataConsumerRef)O2DataConsumerCreateWithCFData(data);
 }
 
 void CGDataConsumerRelease(CGDataConsumerRef self){
-   O2DataConsumerRelease(self);
+   O2DataConsumerRelease((O2DataConsumerRef)self);
 }
 

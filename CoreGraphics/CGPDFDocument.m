@@ -10,21 +10,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <Onyx2D/O2PDFDocument.h>
 
 CGPDFDocumentRef CGPDFDocumentRetain(CGPDFDocumentRef self) {
-   return [self retain];
+   return (CGPDFDocumentRef)[(O2PDFDocument*)self retain];
 }
 
 void CGPDFDocumentRelease(CGPDFDocumentRef self) {
-   [self release];
+   [(O2PDFDocument*)self release];
 }
 
 CGPDFDocumentRef CGPDFDocumentCreateWithProvider(CGDataProviderRef provider) {
-   return [[O2PDFDocument alloc] initWithDataProvider:provider];
+   return (CGPDFDocumentRef)[[O2PDFDocument alloc] initWithDataProvider:(O2DataProvider*)provider];
 }
 
 size_t CGPDFDocumentGetNumberOfPages(CGPDFDocumentRef self) {
-   return [self pageCount];
+   return [(O2PDFDocument*)self pageCount];
 }
 
 CGPDFPageRef CGPDFDocumentGetPage(CGPDFDocumentRef self,size_t pageNumber) {
-   return [self pageAtNumber:pageNumber];
+   return (CGPDFPageRef)[(O2PDFDocument*)self pageAtNumber:pageNumber];
 }

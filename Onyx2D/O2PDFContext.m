@@ -118,7 +118,7 @@ const NSString *kO2PDFContextTitle=@"kO2PDFContextTitle";
     return NO;
 }
 
--(void)appendBytes:(const void *)ptr length:(unsigned)length {
+-(void)appendBytes:(const void *)ptr length:(NSUInteger)length {
 	_length += length;
 	O2DataConsumerPutBytes(_dataConsumer, ptr, length);
 }
@@ -254,11 +254,11 @@ const NSString *kO2PDFContextTitle=@"kO2PDFContextTitle";
    [self appendPDFStringWithBytes:bytes length:length toObject:[[_contentStreamStack lastObject] mutableData]];
 }
 
--(O2PDFObject *)referenceForFontWithName:(NSString *)name size:(float)size {
+-(O2PDFObject *)referenceForFontWithName:(NSString *)name size:(O2Float)size {
    return [(NSDictionary *)[_fontCache objectForKey:name] objectForKey:[NSNumber numberWithFloat:size]];
 }
 
--(void)setReference:(O2PDFObject *)reference forFontWithName:(NSString *)name size:(float)size {
+-(void)setReference:(O2PDFObject *)reference forFontWithName:(NSString *)name size:(O2Float)size {
    NSMutableDictionary *sizes=[_fontCache objectForKey:name];
    
    if(sizes==nil){
@@ -344,11 +344,11 @@ const NSString *kO2PDFContextTitle=@"kO2PDFContextTitle";
    }
 }
 
-- (void)translateCTM:(float)x:(float)y
+- (void)translateCTM:(O2Float)x :(O2Float)y
 {
 	[self contentWithFormat:@"1 0 0 1 %f %f cm ", x, y];
 }
-- (void)scaleCTM:(float)x:(float)y
+- (void)scaleCTM:(O2Float)x :(O2Float)y
 {
 	[self contentWithFormat:@"%f 0 0 %f 0 0 cm ", x, y];
 }
@@ -365,7 +365,7 @@ const NSString *kO2PDFContextTitle=@"kO2PDFContextTitle";
   O2GState *gState=O2ContextCurrentGState(self);
   
   {
-  const float *components=O2ColorGetComponents(gState->_strokeColor);
+  const O2Float *components=O2ColorGetComponents(gState->_strokeColor);
    
    switch([O2ColorGetColorSpace(gState->_strokeColor) type]){
    
@@ -388,7 +388,7 @@ const NSString *kO2PDFContextTitle=@"kO2PDFContextTitle";
   }
 
   {
-   const float *components=O2ColorGetComponents(gState->_fillColor);
+   const O2Float *components=O2ColorGetComponents(gState->_fillColor);
    
    switch([O2ColorGetColorSpace(gState->_fillColor) type]){
    

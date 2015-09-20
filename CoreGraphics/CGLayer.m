@@ -10,22 +10,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <Onyx2D/O2Layer.h>
 
 CGLayerRef CGLayerRetain(CGLayerRef self) {
-   return O2LayerRetain(self);
+   return (CGLayerRef)O2LayerRetain((O2LayerRef)self);
 }
 
 void CGLayerRelease(CGLayerRef self) {
-   O2LayerRelease(self);
+   O2LayerRelease((O2LayerRef)self);
 }
 
 CGLayerRef CGLayerCreateWithContext(CGContextRef context,CGSize size,id unused) {
-   return O2LayerCreateWithContext(context,size,unused);
+   return (CGLayerRef)O2LayerCreateWithContext(context,size,unused);
 }
 
 CGSize CGLayerGetSize(CGLayerRef self) {
-   return O2LayerGetSize(self);
+   return O2LayerGetSize((O2LayerRef)self);
 }
 
 CGContextRef CGLayerGetContext(CGLayerRef self) {
-   return O2LayerGetContext(self);
+   return O2LayerGetContext((O2LayerRef)self);
 }
 

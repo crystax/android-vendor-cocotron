@@ -10,17 +10,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <Onyx2D/O2Shading.h>
 
 CGShadingRef CGShadingRetain(CGShadingRef self) {
-   return O2ShadingRetain(self);
+   return (CGShadingRef)O2ShadingRetain((O2ShadingRef)self);
 }
 
 void CGShadingRelease(CGShadingRef self) {
-   O2ShadingRelease(self);
+   O2ShadingRelease((O2ShadingRef)self);
 }
 
 CGShadingRef CGShadingCreateAxial(CGColorSpaceRef colorSpace,CGPoint startPoint,CGPoint endPoint,CGFunctionRef function,bool extendStart,bool extendEnd) {
-   return O2ShadingCreateAxial(colorSpace,startPoint,endPoint,function,extendStart,extendEnd);
+   return (CGShadingRef)O2ShadingCreateAxial((O2ColorSpaceRef)colorSpace,startPoint,endPoint,(O2FunctionRef)function,extendStart,extendEnd);
 }
 
 CGShadingRef CGShadingCreateRadial(CGColorSpaceRef colorSpace,CGPoint startPoint,float startRadius,CGPoint endPoint,float endRadius,CGFunctionRef function,bool extendStart,bool extendEnd) {
-   return O2ShadingCreateRadial(colorSpace,startPoint,startRadius,endPoint,endRadius,function,extendStart,extendEnd);
+   return (CGShadingRef)O2ShadingCreateRadial((O2ColorSpaceRef)colorSpace,startPoint,startRadius,endPoint,endRadius,(O2FunctionRef)function,extendStart,extendEnd);
 }

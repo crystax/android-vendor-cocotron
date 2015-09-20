@@ -88,7 +88,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 // these suck
 +windowWithWindowNumber:(int)windowNumber {
-   return (id)windowNumber;
+   return (id)(uintptr_t)windowNumber;
 }
 
 -(int)windowNumber {

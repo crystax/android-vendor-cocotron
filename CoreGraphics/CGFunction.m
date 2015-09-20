@@ -11,13 +11,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import "CGConversions.h"
 
 CGFunctionRef CGFunctionRetain(CGFunctionRef self) {
-   return O2FunctionRetain(self);
+   return (CGFunctionRef)O2FunctionRetain((O2FunctionRef)self);
 }
 
 void CGFunctionRelease(CGFunctionRef self) {
-   O2FunctionRelease(self);
+   O2FunctionRelease((O2FunctionRef)self);
 }
 
 CGFunctionRef CGFunctionCreate(void *info,size_t domainDimension,const CGFloat *domain,size_t rangeDimension,const CGFloat *range,const CGFunctionCallbacks *callbacks) {
-   return O2FunctionCreate(info,domainDimension,domain,rangeDimension,range,O2FunctionCallbacksFromCG(callbacks));
+   return (CGFunctionRef)O2FunctionCreate(info,domainDimension,domain,rangeDimension,range,O2FunctionCallbacksFromCG(callbacks));
 }

@@ -11,98 +11,98 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <Onyx2D/O2Image.h>
 
 CGImageRef CGImageRetain(CGImageRef image) {
-   return O2ImageRetain(image);
+   return (CGImageRef)O2ImageRetain((O2ImageRef)image);
 }
 
 void CGImageRelease(CGImageRef image) {
-   O2ImageRelease(image);
+   O2ImageRelease((O2ImageRef)image);
 }
 
 CGImageRef CGImageCreate(size_t width,size_t height,size_t bitsPerComponent,size_t bitsPerPixel,size_t bytesPerRow,CGColorSpaceRef colorSpace,CGBitmapInfo bitmapInfo,CGDataProviderRef dataProvider,const CGFloat *decode,bool interpolate,CGColorRenderingIntent renderingIntent) {
-   return O2ImageCreate(width,height,bitsPerComponent,bitsPerPixel,bytesPerRow,colorSpace,bitmapInfo,dataProvider,decode,interpolate,renderingIntent);
+   return (CGImageRef)O2ImageCreate(width,height,bitsPerComponent,bitsPerPixel,bytesPerRow,(O2ColorSpaceRef)colorSpace,bitmapInfo,(O2DataProviderRef)dataProvider,decode,interpolate,(O2ColorRenderingIntent)renderingIntent);
 }
 
 CGImageRef CGImageMaskCreate(size_t width,size_t height,size_t bitsPerComponent,size_t bitsPerPixel,size_t bytesPerRow,CGDataProviderRef dataProvider,const CGFloat *decode,bool interpolate) {
-   return O2ImageMaskCreate(width,height,bitsPerComponent,bitsPerPixel,bytesPerRow,dataProvider,decode,interpolate);
+   return (CGImageRef)O2ImageMaskCreate(width,height,bitsPerComponent,bitsPerPixel,bytesPerRow,(O2DataProviderRef)dataProvider,decode,interpolate);
 }
 
 CGImageRef CGImageCreateCopy(CGImageRef self) {
-   return O2ImageCreateCopy(self);
+   return (CGImageRef)O2ImageCreateCopy((O2ImageRef)self);
 }
 
 CGImageRef CGImageCreateCopyWithColorSpace(CGImageRef self,CGColorSpaceRef colorSpace) {
-   return O2ImageCreateCopyWithColorSpace(self,colorSpace);
+   return (CGImageRef)O2ImageCreateCopyWithColorSpace((O2ImageRef)self,(O2ColorSpaceRef)colorSpace);
 }
 
 CGImageRef CGImageCreateWithImageInRect(CGImageRef self,CGRect rect) {
-   return O2ImageCreateWithImageInRect(self,rect);
+   return (CGImageRef)O2ImageCreateWithImageInRect((O2ImageRef)self,rect);
 }
 
 CGImageRef CGImageCreateWithJPEGDataProvider(CGDataProviderRef jpegProvider,const CGFloat *decode,bool interpolate,CGColorRenderingIntent renderingIntent) {
-   return O2ImageCreateWithJPEGDataProvider(jpegProvider,decode,interpolate,renderingIntent);
+   return (CGImageRef)O2ImageCreateWithJPEGDataProvider((O2DataProviderRef)jpegProvider,decode,interpolate,(O2ColorRenderingIntent)renderingIntent);
 }
 
 CGImageRef CGImageCreateWithPNGDataProvider(CGDataProviderRef pngProvider,const CGFloat *decode,bool interpolate,CGColorRenderingIntent renderingIntent) {
-   return O2ImageCreateWithPNGDataProvider(pngProvider,decode,interpolate,renderingIntent);
+   return (CGImageRef)O2ImageCreateWithPNGDataProvider((O2DataProviderRef)pngProvider,decode,interpolate,(O2ColorRenderingIntent)renderingIntent);
 }
 
 CGImageRef CGImageCreateWithMask(CGImageRef self,CGImageRef mask) {
-   return O2ImageCreateWithMask(self,mask);
+   return (CGImageRef)O2ImageCreateWithMask((O2ImageRef)self,(O2ImageRef)mask);
 }
 
 CGImageRef CGImageCreateWithMaskingColors(CGImageRef self,const CGFloat *components) {
-   return O2ImageCreateWithMaskingColors(self,components);
+   return (CGImageRef)O2ImageCreateWithMaskingColors((O2ImageRef)self,components);
 }
 
 size_t CGImageGetWidth(CGImageRef self) {
-   return O2ImageGetWidth(self);
+   return O2ImageGetWidth((O2ImageRef)self);
 }
 
 size_t CGImageGetHeight(CGImageRef self) {
-   return O2ImageGetHeight(self);
+   return O2ImageGetHeight((O2ImageRef)self);
 }
 
 size_t CGImageGetBitsPerComponent(CGImageRef self) {
-   return O2ImageGetBitsPerComponent(self);
+   return O2ImageGetBitsPerComponent((O2ImageRef)self);
 }
 
 size_t CGImageGetBitsPerPixel(CGImageRef self) {
-   return O2ImageGetBitsPerPixel(self);
+   return O2ImageGetBitsPerPixel((O2ImageRef)self);
 }
 
 size_t CGImageGetBytesPerRow(CGImageRef self) {
-   return O2ImageGetBytesPerRow(self);
+   return O2ImageGetBytesPerRow((O2ImageRef)self);
 }
 
 CGColorSpaceRef CGImageGetColorSpace(CGImageRef self) {
-   return O2ImageGetColorSpace(self);
+   return (CGColorSpaceRef)O2ImageGetColorSpace((O2ImageRef)self);
 }
 
 CGBitmapInfo CGImageGetBitmapInfo(CGImageRef self) {
-   return O2ImageGetBitmapInfo(self);
+   return O2ImageGetBitmapInfo((O2ImageRef)self);
 }
 
 CGDataProviderRef CGImageGetDataProvider(CGImageRef self) {
-   return O2ImageGetDataProvider(self);
+   return (CGDataProviderRef)O2ImageGetDataProvider((O2ImageRef)self);
 }
 
 const CGFloat *CGImageGetDecode(CGImageRef self) {
-   return O2ImageGetDecode(self);
+   return O2ImageGetDecode((O2ImageRef)self);
 }
 
 bool CGImageGetShouldInterpolate(CGImageRef self) {
-   return O2ImageGetShouldInterpolate(self);
+   return O2ImageGetShouldInterpolate((O2ImageRef)self);
 }
 
 CGColorRenderingIntent CGImageGetRenderingIntent(CGImageRef self) {
-   return O2ImageGetRenderingIntent(self);
+   return (CGColorRenderingIntent)O2ImageGetRenderingIntent((O2ImageRef)self);
 }
 
 bool CGImageIsMask(CGImageRef self) {
-   return O2ImageIsMask(self);
+   return O2ImageIsMask((O2ImageRef)self);
 }
 
 CGImageAlphaInfo CGImageGetAlphaInfo(CGImageRef self) {
-   return O2ImageGetAlphaInfo(self);
+   return (CGImageAlphaInfo)O2ImageGetAlphaInfo((O2ImageRef)self);
 }
 

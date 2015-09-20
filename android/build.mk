@@ -379,7 +379,7 @@ $$(__target): $$(call objfiles,$(2)) $$(RESOURCES) $$(makefiles) | $$(dir $$(__t
 				-l$$(__d) \
 			)\
 			-lobjc \
-			-llog \
+			$(LDLIBS) \
 			-o $$@ \
 		))
 

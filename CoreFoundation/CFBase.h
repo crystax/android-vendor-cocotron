@@ -56,7 +56,11 @@ THE SOFTWARE IS PROVIDED "AS IS",WITHOUT WARRANTY OF ANY KIND,EXPRESS OR IMPLIED
 #endif // __cplusplus
 
 #if !defined(CF_INLINE)
+#if defined(__GNUC__)
 #define CF_INLINE static __inline__ __attribute__((always_inline))
+#else
+#define CF_INLINE static inline
+#endif
 #endif
 
 #if !defined(CF_RETURNS_RETAINED)
@@ -109,31 +113,6 @@ typedef struct CGRect {
     CGPoint origin;
     CGSize size;
 } CGRect;
-
-COREFOUNDATION_EXPORT const CGPoint CGPointZero;
-COREFOUNDATION_EXPORT const CGSize CGSizeZero;
-COREFOUNDATION_EXPORT const CGRect CGRectZero;
-
-CF_INLINE CGPoint CGPointMake(CGFloat x, CGFloat y)
-{
-    CGPoint val = {.x = x, .y = y};
-    return val;
-}
-
-CF_INLINE CGSize CGSizeMake(CGFloat width, CGFloat height)
-{
-    CGSize val = {.width = width, .height = height};
-    return val;
-}
-
-CF_INLINE CGRect CGRectMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height)
-{
-    CGRect val = {
-        .origin = {.x = x, .y = y},
-        .size = {.width = width, .height = height}
-    };
-    return val;
-}
 
 typedef unsigned short UniChar;
 typedef unsigned long UTF32Char;

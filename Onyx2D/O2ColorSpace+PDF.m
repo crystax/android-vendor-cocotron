@@ -98,7 +98,7 @@
       NSData *data=[tableStream data];
       
       if([data length]!=tableSize){
-       NSLog(@"lookup invalid size,data length=%d,tableSize=%d",[data length],tableSize);
+       NSLog(@"lookup invalid size,data length=%td,tableSize=%d",[data length],tableSize);
        return nil;
       }
       return [[O2ColorSpace_indexed alloc] initWithColorSpace:baseColorSpace hival:hival bytes:(const unsigned char *)[data bytes]];

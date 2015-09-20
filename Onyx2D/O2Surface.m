@@ -85,7 +85,7 @@ static O2Float lRGBtoL(O2Float r, O2Float g, O2Float b)
 static void colorToBytesLittle(O2Float color,uint8_t *scanline){
    union {
     unsigned char bytes[4];
-    float         f;
+    O2Float         f;
    } u;
    
    u.f=color;
@@ -125,7 +125,7 @@ static void O2SurfaceWrite_argb32f_to_argb32fLittle(O2Surface *self,int x,int y,
 static void colorToBytesBig(O2Float color,uint8_t *scanline){
    union {
     unsigned char bytes[4];
-    float         f;
+    O2Float         f;
    } u;
    
    u.f=color;
@@ -723,7 +723,7 @@ void O2GaussianKernelRelease(O2GaussianKernelRef kernel) {
 
 static O2argb32f argbFromColor(O2ColorRef color){   
    size_t    count=O2ColorGetNumberOfComponents(color);
-   const float *components=O2ColorGetComponents(color);
+   const O2Float *components=O2ColorGetComponents(color);
 
    if(count==2)
     return O2argb32fInit(components[0],components[0],components[0],components[1]);

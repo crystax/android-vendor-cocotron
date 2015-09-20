@@ -11,9 +11,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 const CFStringRef kCGPDFContextTitle=(CFStringRef)@"kCGPDFContextTitle";
 
 CGContextRef CGPDFContextCreate(CGDataConsumerRef consumer,const CGRect *mediaBox,CFDictionaryRef auxiliaryInfo) {
-   return [[O2PDFContext alloc] initWithConsumer:consumer mediaBox:mediaBox auxiliaryInfo:(NSDictionary *)auxiliaryInfo];
+   return [[O2PDFContext alloc] initWithConsumer:(O2DataConsumer*)consumer mediaBox:mediaBox auxiliaryInfo:(NSDictionary *)auxiliaryInfo];
 }
 
 COREGRAPHICS_EXPORT void CGPDFContextClose(CGContextRef self) {
-   [self close];
+   [(id)self close];
 }

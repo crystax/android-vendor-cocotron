@@ -260,9 +260,9 @@ static void runBlock(NSMutableArray *stack,O2PDFBlock *block){
    }
 }
 
-static void evaluate(void *info,const float *input,float *output) {
+static void evaluate(void *info,const O2Float *input,O2Float *output) {
    O2PDFFunction_Type4 *self=info;
-   float                x=input[0];
+   O2Float                x=input[0];
    NSMutableArray      *stack=[NSMutableArray array];
    
    [stack addObject:[O2PDFObject_Real pdfObjectWithReal:x]];
@@ -527,7 +527,7 @@ static O2PDFBlock *O2PDFParseCalculator(const char *bytes,unsigned length,O2PDFI
    while(YES) {
 
     if(!O2PDFScanCalculator(bytes,length,position,&position,&check))
-     return NO;
+     return nil;
 
 NSLog(@"check=%@",check);
 
@@ -547,7 +547,7 @@ NSLog(@"check=%@",check);
       
       if(block==nil){
        O2PDFError(__FILE__,__LINE__,@"PS calculator parse error");
-       return NO;
+       return nil;
       }
       
       [block addObject:check];
@@ -562,7 +562,7 @@ NSLog(@"check=%@",check);
        
        if(block==nil){
         O2PDFError(__FILE__,__LINE__,@"PS calculator parse error");
-        return NO;
+        return nil;
        }
        
        [[block retain] autorelease];
@@ -581,11 +581,11 @@ NSLog(@"check=%@",check);
       break;
                   
      default:
-      return NO;
+      return nil;
     }
    }
    
-   return NO;
+   return nil;
 }
 
 -initWithDomain:(O2PDFArray *)domain range:(O2PDFArray *)range calculator:(NSData *)data {

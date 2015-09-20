@@ -69,7 +69,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 -(O2PDFxrefEntry *)entryWithNumber:(O2PDFInteger)number generation:(O2PDFInteger)generation {
-   void *key=(void *)number;
+   void *key=(void *)(uintptr_t)number;
    id    check=NSMapGet(_numberToEntries,key);
       
    if(check==nil)
@@ -119,7 +119,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 
 -(void)addEntry:(O2PDFxrefEntry *)entry {
-   void *key=(void *)[entry number];
+   void *key=(void *)(uintptr_t)[entry number];
    id    check=NSMapGet(_numberToEntries,key);
    
    [_entriesInOrder addObject:entry];

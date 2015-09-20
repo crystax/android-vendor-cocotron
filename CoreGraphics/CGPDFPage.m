@@ -11,23 +11,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import "CGConversions.h"
 
 CGPDFPageRef CGPDFPageRetain(CGPDFPageRef self) {
-   return [self retain];
+   return (CGPDFPageRef)[(O2PDFPage*)self retain];
 }
 
 void CGPDFPageRelease(CGPDFPageRef self) {
-   [self release];
+   [(O2PDFPage*)self release];
 }
 
 CGRect CGPDFPageGetBoxRect(CGPDFPageRef self,CGPDFBox box) {
    CGRect result;
    
-   if(![self getRect:&result forBox:box])
+   if(![(O2PDFPage*)self getRect:&result forBox:(O2PDFBox)box])
     result=CGRectZero;
     
    return result;
 }
 
 CGAffineTransform CGPDFPageGetDrawingTransform(CGPDFPageRef self,CGPDFBox box,CGRect rect,int clockwiseDegrees,bool preserveAspectRatio) {
-   return CGAffineTransformFromO2(O2PDFPageGetDrawingTransform(self,box,rect,clockwiseDegrees,preserveAspectRatio));
+   return CGAffineTransformFromO2(O2PDFPageGetDrawingTransform((O2PDFPageRef)self,(O2PDFBox)box,rect,clockwiseDegrees,preserveAspectRatio));
 }
 

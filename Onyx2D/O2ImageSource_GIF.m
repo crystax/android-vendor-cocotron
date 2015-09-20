@@ -59,7 +59,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 
 -(CFDictionaryRef)copyPropertiesAtIndex:(unsigned)index options:(CFDictionaryRef)options {
-   return nil;
+   return NULL;
 }
 
 -(O2Image *)createImageAtIndex:(unsigned)index options:(NSDictionary *)options {

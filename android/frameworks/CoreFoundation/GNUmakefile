@@ -39,4 +39,6 @@ HEADERS := $(strip $(wildcard $(addprefix $(TOPDIR)/,\
 
 DEPENDENCIES := CoreServices
 
+LDLIBS := -llog
+
 include $(TOPDIR)/android/build.mk

@@ -7,6 +7,14 @@
 #define CGL_DLLIMPORT __declspec(dllimport)
 #endif
 
+#if !defined(CGL_INLINE)
+#if defined(__GNUC__)
+#define CGL_INLINE static __inline__ __attribute__((always_inline))
+#else
+#define CGL_INLINE static inline
+#endif
+#endif
+
 #ifdef __cplusplus
 
 #if defined(__WIN32__)
