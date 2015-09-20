@@ -261,7 +261,7 @@
     if(![description isToMany]){
     
      if([objectValue count]>1){
-      NSLog(@"relationship description is not to many, but destination is %d",[objectValue count]);
+      NSLog(@"relationship description is not to many, but destination is %tu",[objectValue count]);
      }
      
      objectValue=[objectValue anyObject];
@@ -442,7 +442,7 @@
     }
     else {
      if([cacheNodeSet count]>1){
-      NSLog(@"relationship is one to one, yet cacheNodeSet count is %d",[cacheNodeSet count]);
+      NSLog(@"relationship is one to one, yet cacheNodeSet count is %tu",[cacheNodeSet count]);
       continue;
      }
      

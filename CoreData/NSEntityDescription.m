@@ -15,7 +15,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <CoreData/NSManagedObject.h>
 #import <Foundation/NSKeyedUnarchiver.h>
 #import <Foundation/NSRaise.h>
-#import <objc/objc-class.h>
+//#import <objc/objc-class.h>
 #import <ctype.h>
 #import <string.h>
 #import <stdint.h>
@@ -61,7 +61,7 @@ static void removeObjectSet(id self,SEL selector,NSSet *values){
 }
 
 id keyObjectForSelector(SEL selector){
-   return [NSNumber numberWithInteger: (NSInteger) selector];
+   return [NSString stringWithUTF8String:sel_getName(selector)];
 }
 
 

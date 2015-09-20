@@ -94,6 +94,7 @@
 
 -(BOOL)loadMetadata:(NSError **)error {
    NSUnimplementedMethod();
+   return NO;
 }
 
 -(void)willRemoveFromPersistentStoreCoordinator:(NSPersistentStoreCoordinator *)coordinator {

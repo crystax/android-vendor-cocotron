@@ -134,6 +134,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -(NSFetchRequest *)fetchRequestFromTemplateWithName:(NSString *)name substitutionVariables:(NSDictionary *)variables {
     NSUnimplementedMethod();
+    return nil;
 }
 
 -(void)setFetchRequestTemplate: (NSFetchRequest *) fetchRequest forName: (NSString *) name {

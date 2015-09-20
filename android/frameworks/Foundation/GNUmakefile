@@ -26,6 +26,6 @@ RESOURCES := $(strip \
 	))\
 )
 
-DEPENDENCIES := CoreGraphics CoreFoundation CoreServices CFNetwork
+DEPENDENCIES := CoreData CoreGraphics CoreFoundation CoreServices CFNetwork
 
 include $(TOPDIR)/android/build.mk

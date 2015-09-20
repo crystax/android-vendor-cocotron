@@ -1,9 +1,9 @@
 #import <CoreData/NSAtomicStore.h>
 
-@class XMLDocument, NSMutableDictionary;
+@class NSXMLDocument, NSMutableDictionary;
 
 @interface NSXMLPersistentStore : NSAtomicStore {
-    XMLDocument *_document;
+    NSXMLDocument *_document;
     NSMutableDictionary *_referenceToCacheNode;
     NSMutableDictionary *_referenceToElement;
     NSMutableSet *_usedReferences;
