@@ -290,7 +290,7 @@ static inline uint32_t premultiplyPixel(uint32_t value){
 }
 
 -(NSString *)description {
-   return [NSString stringWithFormat:@"<%@ %p:size={  %d %d } surface=%@",isa,self,_width,_height,_surface];
+   return [NSString stringWithFormat:@"<%@ %p:size={  %d %d } surface=%@",object_getClass(self),self,_width,_height,_surface];
 }
 
 @end

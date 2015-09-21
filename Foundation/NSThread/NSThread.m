@@ -338,7 +338,7 @@ FOUNDATION_EXPORT id NSThreadSharedInstanceDoNotCreate(NSString *className) {
 }
 
 -(NSString *)description {
-   return [NSString stringWithFormat:@"<%@[0x%lx] threadDictionary: %@ currentPool: %@>", isa, self, _dictionary, _currentPool];
+   return [NSString stringWithFormat:@"<%@[0x%lx] threadDictionary: %@ currentPool: %@>", object_getClass(self), self, _dictionary, _currentPool];
 }
 
 NSAutoreleasePool *NSThreadCurrentPool(void) {

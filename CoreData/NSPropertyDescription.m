@@ -18,7 +18,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -initWithCoder:(NSCoder *)coder {
    if(![coder allowsKeyedCoding])
-    [NSException raise: NSInvalidArgumentException format: @"%@ can not initWithCoder:%@", isa, [coder class]];
+    [NSException raise: NSInvalidArgumentException format: @"%@ can not initWithCoder:%@", object_getClass(self), [coder class]];
 
    _entity=[coder decodeObjectForKey: @"NSEntity"];
    _propertyName=[[coder decodeObjectForKey: @"NSPropertyName"] copy];

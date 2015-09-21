@@ -42,9 +42,8 @@ $(strip \
 	-fno-objc-arc \
 	-fintegrated-as \
 	-fpic \
-	-O2 -g \
+	-O3 -g \
 	-Werror \
-	-Wno-deprecated-objc-isa-usage \
 	-DOBJC_EXPORT= \
 	-DGCC_RUNTIME_3 \
 	-DPTHREAD_INSIDE_BUILD \

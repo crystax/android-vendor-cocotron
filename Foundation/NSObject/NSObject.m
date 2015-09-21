@@ -208,7 +208,7 @@ static IMP objc_msg_forward(id rcv, SEL message) {
 }
 
 -(Class)classForCoder {
-   return isa;
+   return object_getClass(self);
 }
 
 -(Class)classForArchiver {
@@ -229,17 +229,17 @@ static IMP objc_msg_forward(id rcv, SEL message) {
 }
 
 -(IMP)methodForSelector:(SEL)selector {
-   return class_getMethodImplementation(isa,selector);
+   return class_getMethodImplementation(object_getClass(self),selector);
 }
 
 -(void)doesNotRecognizeSelector:(SEL)selector {
    [NSException raise:NSInvalidArgumentException
-     format:@"%c[%@ %@]: selector not recognized", class_isMetaClass(isa)?'+':'-',
-      NSStringFromClass(isa),NSStringFromSelector(selector)];
+     format:@"%c[%@ %@]: selector not recognized", class_isMetaClass(object_getClass(self))?'+':'-',
+      NSStringFromClass(object_getClass(self)),NSStringFromSelector(selector)];
 }
 
 -(NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
-   Method      method=class_getInstanceMethod(isa,selector);
+   Method      method=class_getInstanceMethod(object_getClass(self),selector);
    const char *types=method_getTypeEncoding(method);
 
    return (types==NULL)?(NSMethodSignature *)nil:[NSMethodSignature signatureWithObjCTypes:types];
@@ -293,12 +293,12 @@ static IMP objc_msg_forward(id rcv, SEL message) {
 
 
 -(Class)class {
-   return isa;
+   return object_getClass(self);
 }
 
 
 -(Class)superclass {
-   return class_getSuperclass(isa);
+   return class_getSuperclass(object_getClass(self));
 }
 
 
@@ -350,17 +350,17 @@ static IMP objc_msg_forward(id rcv, SEL message) {
 
 
 -(BOOL)isMemberOfClass:(Class)class {
-   return (isa==class);
+   return object_getClass(self) == class;
 }
 
 
 -(BOOL)conformsToProtocol:(Protocol *)protocol {
-   return [isa conformsToProtocol:protocol];
+   return [object_getClass(self) conformsToProtocol:protocol];
 }
 
 
 -(BOOL)respondsToSelector:(SEL)selector {
-   return class_respondsToSelector(isa,selector);
+   return class_respondsToSelector(object_getClass(self),selector);
 }
 
 
@@ -404,7 +404,7 @@ static IMP objc_msg_forward(id rcv, SEL message) {
 }
 
 -(NSString *)className {
-   return NSStringFromClass(isa);
+   return NSStringFromClass(object_getClass(self));
 }
 
 -(NSString *)description {

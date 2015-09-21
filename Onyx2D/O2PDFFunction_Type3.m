@@ -128,7 +128,7 @@ static void evaluate(void *info,const O2Float *input,O2Float *output) {
 
 -(NSString *)description {
    NSMutableString *result=[NSMutableString string];
-   [result appendFormat:@"<%@ %p:",isa,self];
+   [result appendFormat:@"<%@ %p:",object_getClass(self),self];
    int i;
    
    for(i=0;i<_boundsCount;i++)
