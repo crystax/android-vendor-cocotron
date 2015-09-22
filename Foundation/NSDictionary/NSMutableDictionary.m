@@ -86,4 +86,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     [self removeObjectForKey:[keys objectAtIndex:count]];
 }
 
+- (void)setObject:(id)value forKeyedSubscript:(id<NSCopying>)key {
+    [self setObject:value forKey:key];
+}
+
 @end

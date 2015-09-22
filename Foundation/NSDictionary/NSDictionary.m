@@ -277,6 +277,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
    return nil;
 }
 
+- (id)objectForKeyedSubscript:(id<NSCopying>)key {
+   return [self objectForKey:key];
+}
+
 -(NSUInteger)count {
    NSInvalidAbstractInvocation();
    return 0;

@@ -22,4 +22,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - (void)removeAllObjects;
 - (void)removeObjectsForKeys:(NSArray *)keys;
 
+- (void)setObject:(id)value forKeyedSubscript:(id<NSCopying>)key;
+
 @end

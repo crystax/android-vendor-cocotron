@@ -366,6 +366,9 @@ static int _nsmutablearraycompareindices(const void* v1, const void* v2)
    NSInvalidAbstractInvocation();
 }
 
+- (void)setObject:(id)value atIndexedSubscript:(NSUInteger)index {
+   [self replaceObjectAtIndex:index withObject:value];
+}
 
 -(void)replaceObjectsInRange:(NSRange)range
         withObjectsFromArray:(NSArray *)array {
