@@ -22,7 +22,7 @@ endif
 
 FRAMEWORK ?= $(notdir $(MYDIR))
 
-DEVDEFAULTS = $(NDK)/build/tools/dev-defaults.sh
+DEVDEFAULTS = $(NDK)/build/instruments/dev-defaults.sh
 
 OBJC2 := $(NDK)/$(shell source $(DEVDEFAULTS) && echo $$GNUSTEP_OBJC2_SUBDIR)
 
